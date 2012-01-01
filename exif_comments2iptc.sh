@@ -21,9 +21,7 @@ fi
 
 for file_name
   do
-    echo $file_name
     comment=`/sw/bin/exiftool -s3 -comment $file_name`
-    echo $file_name $comment
     if [[ $comment ]]; then
       echo "File: $file_name has comment: $comment"
       `/sw/bin/exiv2 -k -M "add Iptc.Application2.Caption $comment" $file_name`
