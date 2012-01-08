@@ -18,22 +18,28 @@ tell application "iPhoto"
 		set AppleScript's text item delimiters to {""}
 		set lat to item 1 of clip_items as real
 		display dialog "Latitude = " & lat
-		set long to item 2 of clip_items
+		set long to item 2 of clip_items as real
 		display dialog "Longitude = " & long
 		set alt to item 3 of clip_items
 		display dialog "Altitude = " & alt
 		--if ((lat ² 90) and (lat ³ -90)) then
-(*		if (lat > 90) then
+		(*		if (lat > 90) then
 			error "Latitude out of range - too high" number -12000
 		else if (lat < -90) then
 			error "Latitude out of range - too low" number -12001
 		else
 			display dialog "Latitude2 = " & lat
 		end if*)
-		if (lat < -90 or lat > 90) then 
-		error "Latitude out of range" number 12000
+		if (lat < -90 or lat > 90) then
+			error "Latitude out of range" number 12000
 		else
-		display dialog "Latitude2 = " & lat
+			display dialog "Latitude in range:  " & lat
+		end if
+		
+		if (long < -180 or long > 180) then
+			error "Longitude out of range" number 12001
+		else
+			display dialog "Longitude in range: " & long
 		end if
 		display dialog "Finished clip_in"
 		copy (my selected_images()) to these_images
@@ -61,10 +67,20 @@ tell application "iPhoto"
 			--display dialog image_path
 			--return image_path
 		end if
-	on error errMsg number errorNumber
-		--display dialog "Paste Location Failed" buttons {"OK"} with icon caution with title "ERROR"
-		display dialog "An unknown error occurred:  " & errorNumber as text
-		
+	on error errStr number errorNumber
+		-- If our own error number, warn about out of range data.
+		if the errorNumber is equal to 12000 then
+			display dialog "Latitude value out of range. Latitude must be between -90 and +90" buttons {"Close"} with icon 0
+			return 0 -- Return the default value (0).
+		else if the errorNumber is equal to 12001 then
+			display dialog "Longitude value out of range. Longitude must be between -180 and +180" buttons {"Close"} with icon 0
+			return 0 -- Return the default value (0).
+		else
+			display dialog "An unknown error occurred:  " & errorNumber as text
+			-- An unknown error occurred. Resignal, so the caller
+			-- can handle it, or AppleScript can display the number.
+			error errStr number errorNumber
+		end if
 	end try
 end tell
 
