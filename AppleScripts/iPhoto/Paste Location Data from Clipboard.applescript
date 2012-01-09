@@ -1,47 +1,49 @@
 tell application "iPhoto"
 	activate
 	try
-		--display dialog "in script"
 		set clip_in to the clipboard
 		--display dialog clip_in as text
+		
+		-- Split clipboard into items with : delimiter
 		set AppleScript's text item delimiters to {":"}
 		set clip_items to text items of clip_in
 		set num_items to (count of clip_items)
-		display dialog "There are " & num_items & " items in the clipboard"
-		if num_items = 0 then
-			display dialog "The clipboard is empty" buttons {"OK"} with icon caution with title "ERROR"
+		--display dialog "There are " & num_items & " items in the clipboard"
+		if num_items < 3 then
+			--display dialog "The clipboard does not have enough items" buttons {"OK"} with icon caution with title "ERROR"
+			error "Cipboard has less than 3 items." number 9004
+			
 		else if num_items is greater than 3 then
-			display dialog "The clipboard has too many items" buttons {"OK"} with icon caution with title "ERROR"
-		else
-			display dialog "Number of clipboard items OK"
+			--display dialog "The clipboard has too many items" buttons {"OK"} with icon caution with title "ERROR"
+			error "Cipboard has more than 3 items." number 9005
+		--else
+			--display dialog "Number of clipboard items OK"
 		end if
 		set AppleScript's text item delimiters to {""}
+		
+		-- Parse clipboard items
 		set lat to item 1 of clip_items as real
 		display dialog "Latitude = " & lat
 		set long to item 2 of clip_items as real
 		display dialog "Longitude = " & long
 		set alt to item 3 of clip_items
 		display dialog "Altitude = " & alt
-		--if ((lat ² 90) and (lat ³ -90)) then
-		(*		if (lat > 90) then
-			error "Latitude out of range - too high" number -12000
-		else if (lat < -90) then
-			error "Latitude out of range - too low" number -12001
-		else
-			display dialog "Latitude2 = " & lat
-		end if*)
+		
+		-- confirm items in range
 		if (lat < -90 or lat > 90) then
-			error "Latitude out of range" number 12000
+			error "Latitude out of range" number 9000
 		else
 			display dialog "Latitude in range:  " & lat
 		end if
 		
 		if (long < -180 or long > 180) then
-			error "Longitude out of range" number 12001
+			error "Longitude out of range" number 9001
 		else
 			display dialog "Longitude in range: " & long
 		end if
-		display dialog "Finished clip_in"
+		
+		-- display dialog "Finished clip_in"
+		
 		copy (my selected_images()) to these_images
 		if these_images is false or (the count of these_images) is 0 then
 			display dialog "Please select a single image."
@@ -50,7 +52,7 @@ tell application "iPhoto"
 		else
 			display dialog "Selection accepted"
 			repeat with i from 1 to the count of these_images
-				set the keywordslist to ""
+				--set the keywordslist to ""
 				set this_photo to item i of these_images
 				tell this_photo
 					set the image_file to the image path
@@ -69,11 +71,17 @@ tell application "iPhoto"
 		end if
 	on error errStr number errorNumber
 		-- If our own error number, warn about out of range data.
-		if the errorNumber is equal to 12000 then
+		if the errorNumber is equal to 9000 then
 			display dialog "Latitude value out of range. Latitude must be between -90 and +90" buttons {"Close"} with icon 0
 			return 0 -- Return the default value (0).
-		else if the errorNumber is equal to 12001 then
+		else if the errorNumber is equal to 9001 then
 			display dialog "Longitude value out of range. Longitude must be between -180 and +180" buttons {"Close"} with icon 0
+			return 0 -- Return the default value (0).
+		else if the errorNumber is equal to 9004 then
+			display dialog "The clipboard had too few items! Try copying the location data again." buttons {"Close"} with icon 0
+			return 0 -- Return the default value (0).
+		else if the errorNumber is equal to 9005 then
+			display dialog "The clipboard had too many items! Try copying the location data again." buttons {"Close"} with icon 0
 			return 0 -- Return the default value (0).
 		else
 			display dialog "An unknown error occurred:  " & errorNumber as text
