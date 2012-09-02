@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+<noscript>
+    <strong>Javascript required to view this content.</strong>
+</noscript>
+
+<div id="mini-g3"></div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+<script src="js/jquery.minislideshow.4.0.min.js"></script>
+
+<script>
+$('#mini-g3').minislideshow({
+    url: '/gallery3/index.php/rss/feed/gallery/album/11',
+    width: 640,
+    height: 480,
+    delay: 6,
+    link: false,
+    altlink: 'http://www.kilohotel.com/gallery3/index.php/RV8',
+    radius: '10px',
+    shuffle: false,
+    fullsize: true
+});
+</script>
+</body>
+</html>
