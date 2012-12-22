@@ -15,17 +15,16 @@ tell application "iPhoto"
 		if these_images is false or (the count of these_images) is 0 then Â
 			error "Please select a single image."
 		
-		set locationName to text returned of (display dialog "Location: " default answer "Home" buttons {"Continue"} default button "Continue")
-		set city to text returned of (display dialog "City: " default answer "Greely" buttons {"Continue"} default button "Continue")
-		set state to text returned of (display dialog "State: " default answer "ON" buttons {"Continue"} default button "Continue")
-		set countryName to text returned of (display dialog "Country Name: " default answer "Canada" buttons {"Continue"} default button "Continue")
-		set countryCode to text returned of (display dialog "Country Code: " default answer "CA" buttons {"Continue"} default button "Continue")
-		set |latitude| to text returned of (display dialog "Latitude: " default answer "45,15,10.16" buttons {"Continue"} default button "Continue")
-		set northSouth to text returned of (display dialog "North/South: " default answer "N" buttons {"Continue"} default button "Continue")
-		set |longitude| to text returned of (display dialog "Longitude: " default answer "75,34,55.64" buttons {"Continue"} default button "Continue")
-		set eastWest to text returned of (display dialog "East/West: " default answer "W" buttons {"Continue"} default button "Continue")
-		-- set |altitude| to text returned of (display dialog "Altitude: " default answer "0" buttons {"Continue"} default button "Continue")
-		
+		set locationName to "Home"
+		set city to "Greely"
+		set state to "ON"
+		set countryName to "Canada"
+		set countryCode to "CA"
+		set |latitude| to "45,15,10.16"
+		set northSouth to "N"
+		set |longitude| to "75,34,55.64"
+		set eastWest to "W"
+				
 		repeat with i from 1 to the count of these_images
 			set this_photo to item i of these_images
 			tell this_photo

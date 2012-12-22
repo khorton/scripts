@@ -14,17 +14,16 @@ tell application "iPhoto"
 		copy (my selected_images()) to these_images
 		if these_images is false or (the count of these_images) is 0 then Â
 			error "Please select a single image."
-		
-		set locationName to text returned of (display dialog "Location: " default answer "Brenton" buttons {"Continue"} default button "Continue")
-		set city to text returned of (display dialog "City: " default answer "Brenton" buttons {"Continue"} default button "Continue")
-		set state to text returned of (display dialog "State: " default answer "NS" buttons {"Continue"} default button "Continue")
-		set countryName to text returned of (display dialog "Country Name: " default answer "Canada" buttons {"Continue"} default button "Continue")
-		set countryCode to text returned of (display dialog "Country Code: " default answer "CA" buttons {"Continue"} default button "Continue")
-		set |latitude| to text returned of (display dialog "Latitude: " default answer "43,57,45.04" buttons {"Continue"} default button "Continue")
-		set northSouth to text returned of (display dialog "North/South: " default answer "N" buttons {"Continue"} default button "Continue")
-		set |longitude| to text returned of (display dialog "Longitude: " default answer "66,3,41.13" buttons {"Continue"} default button "Continue")
-		set eastWest to text returned of (display dialog "East/West: " default answer "W" buttons {"Continue"} default button "Continue")
-		-- set |altitude| to text returned of (display dialog "Altitude: " default answer "0" buttons {"Continue"} default button "Continue")
+
+		set locationName to "Brenton"
+		set city to "Brenton"
+		set state to "NS"
+		set countryName to "Canada"
+		set countryCode to "CA"
+		set |latitude| to "43,57,45.04"
+		set northSouth to "N"
+		set |longitude| to "66,3,41.13"
+		set eastWest to "W"
 		
 		repeat with i from 1 to the count of these_images
 			set this_photo to item i of these_images
