@@ -8,23 +8,36 @@
 -- 
 property exifToolOriginal : "_original"
 
+-- MAKE SURE SUPPORT FOR ASSISTIVE DEVICES IS ACTIVE
+tell application "System Events"
+       if UI elements enabled is false then
+               tell application "System Preferences"
+                       activate
+                       set current pane to pane id "com.apple.preference.universalaccess"
+                       display dialog "This script requires access for assistive evices be enabled." & return & return & "To continue, click the OK button and enter an administrative password in the forthcoming security dialog." with icon 1
+					                  end tell
+               set UI elements enabled to true
+               if UI elements enabled is false then return "user cancelled"
+               delay 1
+       end if
+end tell
+
 tell application "iPhoto"
 	activate
 	try
 		copy (my selected_images()) to these_images
 		if these_images is false or (the count of these_images) is 0 then Â
 			error "Please select a single image."
-		
-		set locationName to text returned of (display dialog "Location: " default answer "Brenton" buttons {"Continue"} default button "Continue")
-		set city to text returned of (display dialog "City: " default answer "Brenton" buttons {"Continue"} default button "Continue")
-		set state to text returned of (display dialog "State: " default answer "NS" buttons {"Continue"} default button "Continue")
-		set countryName to text returned of (display dialog "Country Name: " default answer "Canada" buttons {"Continue"} default button "Continue")
-		set countryCode to text returned of (display dialog "Country Code: " default answer "CA" buttons {"Continue"} default button "Continue")
-		set |latitude| to text returned of (display dialog "Latitude: " default answer "43,57,45.04" buttons {"Continue"} default button "Continue")
-		set northSouth to text returned of (display dialog "North/South: " default answer "N" buttons {"Continue"} default button "Continue")
-		set |longitude| to text returned of (display dialog "Longitude: " default answer "66,3,41.13" buttons {"Continue"} default button "Continue")
-		set eastWest to text returned of (display dialog "East/West: " default answer "W" buttons {"Continue"} default button "Continue")
-		-- set |altitude| to text returned of (display dialog "Altitude: " default answer "0" buttons {"Continue"} default button "Continue")
+
+		set locationName to "Brenton"
+		set city to "Brenton"
+		set state to "NS"
+		set countryName to "Canada"
+		set countryCode to "CA"
+		set |latitude| to "43,57,45.04"
+		set northSouth to "N"
+		set |longitude| to "66,3,41.13"
+		set eastWest to "W"
 		
 		repeat with i from 1 to the count of these_images
 			set this_photo to item i of these_images
@@ -41,14 +54,26 @@ tell application "iPhoto"
 			--display dialog of output
 			do shell script "rm '" & image_file & "'" & exifToolOriginal
 		end repeat
-		display dialog "Geo Exif write complete."
+		
+		tell application "System Events"
+			tell process "iPhoto"
+				tell menu bar 1
+					tell menu bar item "Photos"
+						tell menu "Photos"
+							click menu item "Rescan for Location"
+						end tell
+					end tell
+				end tell
+			end tell
+		end tell
+		
+		display dialog "Done"
 	on error error_message number error_number
 		if the error_number is not -128 then
 			display dialog error_message buttons {"Cancel"} default button 1
 		end if
 	end try
 end tell
-
 
 on selected_images()
 	tell application "iPhoto"
