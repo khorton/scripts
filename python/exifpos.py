@@ -55,7 +55,7 @@ else:
     longEW = "E"
 
 # print latNS, lat
-# print longNS, longg
+# print longEW, longg
 # print files
 
 c1 = "exiftool -overwrite_original_in_place -P -GPSMapDatum=WGS-84 -gps:GPSLatitude="
@@ -70,7 +70,10 @@ command = "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s" % (c1, lat, c2, latNS, c3, longg, c4,
 
 if files:
     print "found files"
+    print files
     os.execv(command, files)
 else:
-    print command
+    command2 = "%s *.JPG *.ARW" % command
+    print command2
+    
 
