@@ -10,23 +10,6 @@ from bs4 import BeautifulSoup
 db=MySQLdb.connect(user='root',passwd="Yarmouth2",db="rv8_merge")
 c=db.cursor()
 
-# sid=2015010420254995
-# c.execute("SELECT ai_sid, ai_img_num, ai_filename FROM gl_article_images WHERE ai_sid = %s", sid)
-# array = c.fetchmany(10)
-# for row in array:
-#     (sid, num, iid) = row
-#     print sid, num, iid
-
-# sid = 2015010420254995 # with images
-# sid = 20141220235836599 # no images
-# c.execute("SELECT ai_img_num, ai_filename FROM gl_article_images WHERE ai_sid=%s", sid)
-# img_array = c.fetchmany(20)
-# if c.rownumber > 0:
-#     for row in img_array:
-#         ai_img_num, ai_filename = row
-#         print ai_img_num, ai_filename
-# else:
-#     print "no images"
 
 
 def parse_all():
