@@ -1,9 +1,9 @@
 #! /sw/bin/python2.7
-# print Greely SunRise and SunSet times
+# print Brenton SunRise and SunSet times
 
 import ephem as E
 gr=E.Observer()
-gr.lat, gr.long = '45.252833','-75.582127'
+gr.lat, gr.long = '43.962526','-66.061365'
 gr.elevation = 110
 sun = E.Sun()
   
