@@ -20,6 +20,29 @@ image pop-up extension.
 
 #mysql python docs at https://github.com/farcepest/MySQLdb1/blob/master/doc/user_guide.rst#mysqldb
 
+"""
+Introtext, straight from database
+<p><br>\r<a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1_original.jpg" title="View unscaled image"><img width="300" height="200" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1.jpg" alt=""></a>The weather on Sunday was wonderful, and we took full advantage by flying to Toronto for lunch. <a href="http://en.wikipedia.org/wiki/Billy_Bishop_Toronto_City_Airport">Toronto City Centre Airport</a> is on an island close to the CN Tower, right next to downtown Toronto. It is the main hub for <a href="http://en.wikipedia.org/wiki/Porter_Airlines">Porter Airlines</a>, and is a great way to get to downtown Toronto. </p>\r\r<p>Here you see downtown Toronto, the CN Tower, and the airport as we approach from the west.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2.jpg" alt=""></a>The view as we turn onto base leg for runway 08.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3.jpg" alt=""></a>Calling Nav Canada to close our flight plan.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4.jpg" alt=""></a>Terry, after a great lunch, ready to head back home.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5.jpg" alt=""></a>The Porter Airlines terminal, and some of their DeHavilland Dash 8 aircraft, seen shortly after take-off.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6.jpg" alt=""></a>The <a href="http://en.wikipedia.org/wiki/Rogers_Centre">Rogers Centre</a> and the <a href="http://en.wikipedia.org/wiki/CN_Tower">CN Tower</a>, off our left, just east of the airport.</p>
+
+whole document, from BeautifulSoup, using html5lib parser:
+
+<html><head></head><body><p><br/>
+<a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1_original.jpg" title="View unscaled image"><img align="left" alt="" height="200" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1.jpg" width="300"/></a>The weather on Sunday was wonderful, and we took full advantage by flying to Toronto for lunch. <a href="http://en.wikipedia.org/wiki/Billy_Bishop_Toronto_City_Airport">Toronto City Centre Airport</a> is on an island close to the CN Tower, right next to downtown Toronto. It is the main hub for <a href="http://en.wikipedia.org/wiki/Porter_Airlines">Porter Airlines</a>, and is a great way to get to downtown Toronto. </p>
+
+<p>Here you see downtown Toronto, the CN Tower, and the airport as we approach from the west.<br clear="all"/></p><hr align="center" width="95%"/><p></p>
+
+<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2.jpg" width="299"/></a>The view as we turn onto base leg for runway 08.<br clear="all"/></p><hr align="center" width="95%"/><p></p>
+
+<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3.jpg" width="299"/></a>Calling Nav Canada to close our flight plan.<br clear="all"/></p><hr align="center" width="95%"/><p></p>
+
+<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4.jpg" width="299"/></a>Terry, after a great lunch, ready to head back home.<br clear="all"/></p><hr align="center" width="95%"/><p></p>
+
+<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5.jpg" width="299"/></a>The Porter Airlines terminal, and some of their DeHavilland Dash 8 aircraft, seen shortly after take-off.<br clear="all"/></p><hr align="center" width="95%"/><p></p>
+
+<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6.jpg" width="299"/></a>The <a href="http://en.wikipedia.org/wiki/Rogers_Centre">Rogers Centre</a> and the <a href="http://en.wikipedia.org/wiki/CN_Tower">CN Tower</a>, off our left, just east of the airport.</p></body></html>
+
+"""
+
 import MySQLdb
 import sys
 import os
@@ -117,14 +140,35 @@ def parse_one(sid):
     # print "ID =", id
     # print "Topic=", tid
     # print "uid=", uid
-    print "Story Date/Time=", date
-    print "Short Date=", sid[:8]
-    print "Title=", title
-    # print "Intro Text=", introtext
+    # print "Story Date/Time=", date
+    # print "Short Date=", sid[:8]
+    # print "Title=", title
+    print "Intro Text=", introtext
     # print "Body Text =", bodytext
     # print "Hits =", hits
+    print "==============================\n=============================="
 
     soup = BeautifulSoup(introtext,"html5lib")
+
+    print soup.find_all('a')
+    if len(soup.find_all('a')) > 0:
+        print "a tag atributes:"
+        print "Title:", soup.a['title']
+        # print "Width:", soup.a['width']
+        # print "Height:", soup.a['height']
+        # print "Alignment:", soup.a['align']
+        # print "Alt Text:", soup.a['alt']
+        print "href:", soup.a['href']
+        print "all a tag contents", soup.a.contents
+    else:
+        print "No <a> tags in this article."
+        # print soup.find_all(p=re.compile("\[image\d*\]|\[image\d*_left\]|\[image\d*_right\]"))
+        # print soup.find_all('p', text=re.compile(".*image.*"))
+        # print soup.p(text="image")
+        # print soup.p()
+        print soup.find_all('p')
+
+    print "==============================\n=============================="
 
     print soup.find_all('img')
     if len(soup.find_all('img')) > 0:
@@ -141,6 +185,7 @@ def parse_one(sid):
         # print soup.p(text="image")
         # print soup.p()
         print soup.find_all('p')
+        
 
     p = new_p(introtext, sid[:8], imgs, img_nums)
     print p
