@@ -130,6 +130,7 @@ import bs4
 base_img_dir='/Library/WebServer/Documents/joomla3/images/'
 gl_img_dir='/Users/kwh/temp/joomla3/geeklog-rv8-arvixe/public_html/rv8/images/articles/'
 hard_code_gl_img_dir = 'http://www.kilohotel.com/rv8/images/articles/'
+hard_code_gl_img_dir2 = 'http://go.phpwebhosting.com/~khorton/rv8/images/articles/'
 joomla_img_dir = 'images/'
 
 db=MySQLdb.connect(user='root',passwd="Yarmouth2",db="rv8_merge")
@@ -139,8 +140,14 @@ thumbnail=re.compile('.*_original.*')
 
 
 
-def parse_all():
-    c.execute("SELECT sid, uid, date, title, introtext, bodytext, hits, comments FROM gl_stories")
+def parse_all(csv_file_name='GL_export.csv'):
+    
+    with open(csv_file_name, 'wb') as csvfile:
+        GLwriter = csv.writer(csvfile)
+        
+        GLwriter.writerow(['Title', 'Section', 'Category', 'Intro', 'Body', 'Date'])
+    
+    c.execute("SELECT sid, uid, date, title, introtext, bodytext, hits, comments FROM gl_stories WHERE export_flag=0")
     story_array = c.fetchmany(2000)
     n = 4
     for row in story_array:
@@ -265,10 +272,12 @@ def parse_one(sid):
     #     print soup.find_all('p')
         
 
-    p = new_p(introtext, sid[:8], imgs, img_nums)
+    Joomla_intro, Joomla_body = new_p(introtext, bodytext, sid[:8], imgs, img_nums)
     # print "Returned para"
-    # print p
-    # print "==============================\n=============================="
+    print Joomla_intro
+    
+    print "==============================\n=============================="
+    print Joomla_body
     # Typical pattern if image is hardcoded:
     # <img width="300" height="132" align="right" src="http://www.kilohotel.com/rv8/images/articles/20030507210918708_1.jpg" alt="">
     
@@ -276,7 +285,7 @@ def parse_one(sid):
     # <img align="right" alt="" height="132" src="http://www.kilohotel.com/rv8/images/articles/20030507210918708_1.jpg" width="300"/>
 
 
-def new_p(p, date, imgs, img_nums):
+def new_p(p, p2, date, imgs, img_nums):
     """move images to required directories, and create new <p> in format required by Joomla with modal extension
     convert the image tags from Geeklog [image1_left] to Joomla + Modal extension tags
     convert hard coded paths from Geeklog image directory to Joomla image directory
@@ -312,7 +321,8 @@ def new_p(p, date, imgs, img_nums):
         try:
             shutil.copy2(gl_img_dir + img, joomla_img_full_path)
         except IOError:
-            print "***", img, "thumbnail image not present"
+            # print "***", img, "thumbnail image not present"
+            pass
             
         geeklog_code_left = '[image' + str(img_nums[n]) + '_left]'
         geeklog_code_right = '[image' + str(img_nums[n]) + '_right]'
@@ -327,37 +337,59 @@ def new_p(p, date, imgs, img_nums):
         p=p.replace(geeklog_code_right, joomla_code_right)
         p=p.replace(geeklog_code_no_align, joomla_code_no_align)
         p=p.replace(hard_code_gl_img_dir, joomla_img_path)
+        p=p.replace(hard_code_gl_img_dir2, joomla_img_path)
+
+        p2=p2.replace(geeklog_code_left, joomla_code_left)
+        p2=p2.replace(geeklog_code_right, joomla_code_right)
+        p2=p2.replace(geeklog_code_no_align, joomla_code_no_align)
+        p2=p2.replace(hard_code_gl_img_dir, joomla_img_path)
+        p2=p2.replace(hard_code_gl_img_dir2, joomla_img_path)
     
     p=p.replace('\n', '').replace('\r', '')    
+    p2=p2.replace('\n', '').replace('\r', '') 
+       
     soup = BeautifulSoup(p,"html5lib")
-    global a_tag
+    soup2 = BeautifulSoup(p2,"html5lib")
+    # global a_tag
     a_tag=soup('a')
+    a_tag2=soup2('a')
 
     for n, item in enumerate(a_tag):
         if thumbnail.match(str(item)):
-            print "thumbnail present"
+            # print "thumbnail present"
             a_tag[n]['class']='modal'
-        else:
-            print "no thumbnail present"
+        # else:
+        #     print "no thumbnail present"
                 
-    # insert Geeklog article publication date in <p> tag as first element of the body
+    for n, item in enumerate(a_tag2):
+        if thumbnail.match(str(item)):
+            # print "thumbnail present"
+            a_tag2[n]['class']='modal'
+            
+    # insert Geeklog article publication date in <p> tag as first element of the intro body tag
     DT='***DateTime:' + date
     date_tag=soup.new_tag('p')
     date_tag.insert(0,DT)
     soup.body.insert(0,date_tag)
     
     # convert to single string with the contents of the body tag    
-    str_result = ''
+    intro = ''
+    body = ''
     for tag in soup.body.contents:
-        str_result += unicode(tag).strip()
+        intro += unicode(tag).strip()
     
-    return str_result
+    for tag in soup2.body.contents:
+        body += unicode(tag).strip()
+    
+    return intro, body
     
     
 
 # parse_all()
-parse_one(20141216012305720) # new article, with [image1_left] codes
+# parse_one(20141216012305720) # new article, with [image1_left] codes
 # parse_one(20030507210918708) # old article with images in Geelog format, and no thumbnails
 # parse_one(2002102621491281) # very first article, with hard coded images
 # parse_one(20141013153858942) #  sample with hard coded images and thumbnails - need to add class="modal"
 # parse_one(20030701205830485) # no images
+# parse_one(20030824210346818) # with body text too, but no images
+parse_one(20030105192759933) # body, with image, and phpwebhosting url
