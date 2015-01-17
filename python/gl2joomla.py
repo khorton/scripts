@@ -31,6 +31,14 @@ introtext
 soup = BS(introtext,"html5lib")
 soup
 
+DT='***DateTime:2003-07-01 20:58:30'
+date_tag=soup.new_tag('p')
+date_tag.insert(0,DT)
+soup.body.insert(0,date_tag)
+
+dt=soup.p.extract()
+DT=dt.string
+
 
 Introtext, straight from database
 <p><br>\r<a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1_original.jpg" title="View unscaled image"><img width="300" height="200" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1.jpg" alt=""></a>The weather on Sunday was wonderful, and we took full advantage by flying to Toronto for lunch. <a href="http://en.wikipedia.org/wiki/Billy_Bishop_Toronto_City_Airport">Toronto City Centre Airport</a> is on an island close to the CN Tower, right next to downtown Toronto. It is the main hub for <a href="http://en.wikipedia.org/wiki/Porter_Airlines">Porter Airlines</a>, and is a great way to get to downtown Toronto. </p>\r\r<p>Here you see downtown Toronto, the CN Tower, and the airport as we approach from the west.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2.jpg" alt=""></a>The view as we turn onto base leg for runway 08.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3.jpg" alt=""></a>Calling Nav Canada to close our flight plan.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4.jpg" alt=""></a>Terry, after a great lunch, ready to head back home.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5.jpg" alt=""></a>The Porter Airlines terminal, and some of their DeHavilland Dash 8 aircraft, seen shortly after take-off.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6.jpg" alt=""></a>The <a href="http://en.wikipedia.org/wiki/Rogers_Centre">Rogers Centre</a> and the <a href="http://en.wikipedia.org/wiki/CN_Tower">CN Tower</a>, off our left, just east of the airport.</p>
@@ -116,6 +124,7 @@ import shutil
 import csv
 import re
 from bs4 import BeautifulSoup
+import bs4
 
 
 base_img_dir='/Library/WebServer/Documents/joomla3/images/'
@@ -196,14 +205,14 @@ def parse_one(sid):
     img_nums=[]
     img_alts=[]
     if c.rownumber > 0:
-        print "Story Images:"
+        # print "Story Images:"
         for row in img_array:
             ai_img_num, ai_filename = row
-            print ai_img_num, ai_filename
+            # print ai_img_num, ai_filename
             imgs.append(ai_filename)
             img_nums.append(ai_img_num)
-    else:
-        print "no images in database"
+    # else:
+    #     print "no images in database"
 
     # print "Story ID=", sid
     # print "ID =", id
@@ -215,7 +224,7 @@ def parse_one(sid):
     # print "Intro Text=", introtext
     # print "Body Text =", bodytext
     # print "Hits =", hits
-    print "==============================\n=============================="
+    # print "==============================\n=============================="
 
     # soup = BeautifulSoup(introtext,"html5lib")
 
@@ -257,8 +266,8 @@ def parse_one(sid):
         
 
     p = new_p(introtext, sid[:8], imgs, img_nums)
-    print "Returned para"
-    print p
+    # print "Returned para"
+    # print p
     # print "==============================\n=============================="
     # Typical pattern if image is hardcoded:
     # <img width="300" height="132" align="right" src="http://www.kilohotel.com/rv8/images/articles/20030507210918708_1.jpg" alt="">
@@ -271,11 +280,14 @@ def new_p(p, date, imgs, img_nums):
     """move images to required directories, and create new <p> in format required by Joomla with modal extension
     convert the image tags from Geeklog [image1_left] to Joomla + Modal extension tags
     convert hard coded paths from Geeklog image directory to Joomla image directory
+    insert the artice publication date into the content paragraph, for extraction 
+      after the content is imported into Joomla
     
     Notes:
-    1. Articles published prior to 08 Jan 2005 had hard coded images in the html, with no thumbnails.
+    1. Articles published prior to 08 Jan 2005 have hard coded images in the html, with no thumbnails.
     2. Articles published from 08 Jan 2005 to 13 Oct 2014 have hard coded images, with thumbnails
     3. Articles published after 13 Oct 2014 have [image1_left] tags, and the images listed in the database
+    4. Some articles published on all dates have no images.
     
     return the converted html text block"""
 
@@ -306,9 +318,6 @@ def new_p(p, date, imgs, img_nums):
         geeklog_code_right = '[image' + str(img_nums[n]) + '_right]'
         geeklog_code_no_align = '[image' + str(img_nums[n]) + ']'
         
-        # joomla_code_left='<a href="' + joomla_img + '" class="modal"><img style="margin: 5px; float: left;" src="' + joomla_thumb + '" /></a>'
-        # joomla_code_right='<a href="' + joomla_img + '" class="modal"><img style="margin: 5px; float: right;" src="' + joomla_thumb + '" /></a>'
-        # joomla_code_no_align='<a href="' + joomla_img + '" class="modal"><img style="margin: 5px;" src="' + joomla_thumb + '" /></a>'
         joomla_code_left='<a href="' + joomla_img + '"><img style="margin: 5px; float: left;" src="' + joomla_thumb + '" /></a>'
         joomla_code_right='<a href="' + joomla_img + '"><img style="margin: 5px; float: right;" src="' + joomla_thumb + '" /></a>'
         joomla_code_no_align='<a href="' + joomla_img + '"><img style="margin: 5px;" src="' + joomla_thumb + '" /></a>'
@@ -323,32 +332,32 @@ def new_p(p, date, imgs, img_nums):
     soup = BeautifulSoup(p,"html5lib")
     global a_tag
     a_tag=soup('a')
-    # print a_tag
+
     for n, item in enumerate(a_tag):
-        # print type(item)
-        # print item
-        # item = r'<a href="images/20141216/20141216012305720_1_original.jpg"><img src="images/20141216/20141216012305720_1.jpg" style="margin: 5px; float: left;"/></a>'
         if thumbnail.match(str(item)):
             print "thumbnail present"
             a_tag[n]['class']='modal'
         else:
             print "no thumbnail present"
                 
-                
-    print soup
-        
-         
+    # insert Geeklog article publication date in <p> tag as first element of the body
+    DT='***DateTime:' + date
+    date_tag=soup.new_tag('p')
+    date_tag.insert(0,DT)
+    soup.body.insert(0,date_tag)
     
-    # except Exception as inst:
-    #     print type(inst)     # the exception instance
-    #     print inst           # __str__ allows args to be printed directly
+    # convert to single string with the contents of the body tag    
+    str_result = ''
+    for tag in soup.body.contents:
+        str_result += unicode(tag).strip()
     
-    return str(soup.body.contents)[1:-1]
+    return str_result
+    
     
 
 # parse_all()
-# parse_one(20141216012305720) # new article, with [image1_left] codes
+parse_one(20141216012305720) # new article, with [image1_left] codes
 # parse_one(20030507210918708) # old article with images in Geelog format, and no thumbnails
 # parse_one(2002102621491281) # very first article, with hard coded images
 # parse_one(20141013153858942) #  sample with hard coded images and thumbnails - need to add class="modal"
-parse_one(20030701205830485) # no images
+# parse_one(20030701205830485) # no images
