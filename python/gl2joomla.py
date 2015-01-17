@@ -21,6 +21,17 @@ image pop-up extension.
 #mysql python docs at https://github.com/farcepest/MySQLdb1/blob/master/doc/user_guide.rst#mysqldb
 
 """
+from bs4 import BeautifulSoup as BS
+import MySQLdb as M
+db=M.connect(user='root',passwd="Yarmouth2",db="rv8_merge")
+c=db.cursor()
+c.execute("SELECT sid, uid, date, title, introtext, bodytext, hits, comments FROM gl_stories WHERE sid=20141013153858942")
+sid, uid, date, title, introtext, bodytext, hits, comments = c.fetchone()
+introtext
+soup = BS(introtext,"html5lib")
+soup
+
+
 Introtext, straight from database
 <p><br>\r<a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1_original.jpg" title="View unscaled image"><img width="300" height="200" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1.jpg" alt=""></a>The weather on Sunday was wonderful, and we took full advantage by flying to Toronto for lunch. <a href="http://en.wikipedia.org/wiki/Billy_Bishop_Toronto_City_Airport">Toronto City Centre Airport</a> is on an island close to the CN Tower, right next to downtown Toronto. It is the main hub for <a href="http://en.wikipedia.org/wiki/Porter_Airlines">Porter Airlines</a>, and is a great way to get to downtown Toronto. </p>\r\r<p>Here you see downtown Toronto, the CN Tower, and the airport as we approach from the west.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2.jpg" alt=""></a>The view as we turn onto base leg for runway 08.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3.jpg" alt=""></a>Calling Nav Canada to close our flight plan.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4.jpg" alt=""></a>Terry, after a great lunch, ready to head back home.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5.jpg" alt=""></a>The Porter Airlines terminal, and some of their DeHavilland Dash 8 aircraft, seen shortly after take-off.<br clear="all"><hr align="center" width="95%"></p>\r\r<p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6.jpg" alt=""></a>The <a href="http://en.wikipedia.org/wiki/Rogers_Centre">Rogers Centre</a> and the <a href="http://en.wikipedia.org/wiki/CN_Tower">CN Tower</a>, off our left, just east of the airport.</p>
 
@@ -41,6 +52,61 @@ whole document, from BeautifulSoup, using html5lib parser:
 
 <p><a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6.jpg" width="299"/></a>The <a href="http://en.wikipedia.org/wiki/Rogers_Centre">Rogers Centre</a> and the <a href="http://en.wikipedia.org/wiki/CN_Tower">CN Tower</a>, off our left, just east of the airport.</p></body></html>
 
+In [26]: soup('a')
+Out[26]: 
+[<a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1_original.jpg" title="View unscaled image"><img align="left" alt="" height="200" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1.jpg" width="300"/></a>,
+ <a href="http://en.wikipedia.org/wiki/Billy_Bishop_Toronto_City_Airport">Toronto City Centre Airport</a>,
+ <a href="http://en.wikipedia.org/wiki/Porter_Airlines">Porter Airlines</a>,
+ <a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2.jpg" width="299"/></a>,
+ <a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3.jpg" width="299"/></a>,
+ <a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4.jpg" width="299"/></a>,
+ <a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5.jpg" width="299"/></a>,
+ <a href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6.jpg" width="299"/></a>,
+ <a href="http://en.wikipedia.org/wiki/Rogers_Centre">Rogers Centre</a>,
+ <a href="http://en.wikipedia.org/wiki/CN_Tower">CN Tower</a>]
+
+In [27]: for item in soup('a'):
+    item['class']='modal'
+   ....:     
+
+In [28]: soup('a')
+Out[28]: 
+[<a class="modal" href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1_original.jpg" title="View unscaled image"><img align="left" alt="" height="200" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1.jpg" width="300"/></a>,
+ <a class="modal" href="http://en.wikipedia.org/wiki/Billy_Bishop_Toronto_City_Airport">Toronto City Centre Airport</a>,
+ <a class="modal" href="http://en.wikipedia.org/wiki/Porter_Airlines">Porter Airlines</a>,
+ <a class="modal" href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_2.jpg" width="299"/></a>,
+ <a class="modal" href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_3.jpg" width="299"/></a>,
+ <a class="modal" href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_4.jpg" width="299"/></a>,
+ <a class="modal" href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_5.jpg" width="299"/></a>,
+ <a class="modal" href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6_original.jpg" title="View unscaled image"><img align="left" alt="" height="199" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_6.jpg" width="299"/></a>,
+ <a class="modal" href="http://en.wikipedia.org/wiki/Rogers_Centre">Rogers Centre</a>,
+ <a class="modal" href="http://en.wikipedia.org/wiki/CN_Tower">CN Tower</a>]
+
+
+
+In [42]: soup('a')[0]['href']
+Out[42]: u'http://www.kilohotel.com/rv8/images/articles/20141013153858942_1_original.jpg'
+
+In [45]: soup('img')[0]
+Out[45]: <img align="left" alt="" height="200" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1.jpg" width="300"/>
+
+In [46]: soup('img')[0]['src']
+Out[46]: u'http://www.kilohotel.com/rv8/images/articles/20141013153858942_1.jpg'
+
+In [47]: soup('img')[0]['alt']
+Out[47]: u''
+
+In [48]: soup('img')[0]['width']
+Out[48]: u'300'
+
+In [49]: soup('img')[0]['height']
+Out[49]: u'200'
+
+In [50]: soup('a')[0]['class']='modal'
+
+In [51]: soup('a')[0]
+Out[51]: <a class="modal" href="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1_original.jpg" title="View unscaled image"><img align="left" alt="" height="200" src="http://www.kilohotel.com/rv8/images/articles/20141013153858942_1.jpg" width="300"/></a>
+
 """
 
 import MySQLdb
@@ -51,6 +117,7 @@ import csv
 import re
 from bs4 import BeautifulSoup
 
+
 base_img_dir='/Library/WebServer/Documents/joomla3/images/'
 gl_img_dir='/Users/kwh/temp/joomla3/geeklog-rv8-arvixe/public_html/rv8/images/articles/'
 hard_code_gl_img_dir = 'http://www.kilohotel.com/rv8/images/articles/'
@@ -58,6 +125,8 @@ joomla_img_dir = 'images/'
 
 db=MySQLdb.connect(user='root',passwd="Yarmouth2",db="rv8_merge")
 c=db.cursor()
+
+thumbnail=re.compile('.*_original.*')
 
 
 
@@ -134,62 +203,63 @@ def parse_one(sid):
             imgs.append(ai_filename)
             img_nums.append(ai_img_num)
     else:
-        print "no images"
+        print "no images in database"
 
-    print "Story ID=", sid
+    # print "Story ID=", sid
     # print "ID =", id
     # print "Topic=", tid
     # print "uid=", uid
     # print "Story Date/Time=", date
     # print "Short Date=", sid[:8]
     # print "Title=", title
-    print "Intro Text=", introtext
+    # print "Intro Text=", introtext
     # print "Body Text =", bodytext
     # print "Hits =", hits
     print "==============================\n=============================="
 
-    soup = BeautifulSoup(introtext,"html5lib")
+    # soup = BeautifulSoup(introtext,"html5lib")
 
-    print soup.find_all('a')
-    if len(soup.find_all('a')) > 0:
-        print "a tag atributes:"
-        print "Title:", soup.a['title']
-        # print "Width:", soup.a['width']
-        # print "Height:", soup.a['height']
-        # print "Alignment:", soup.a['align']
-        # print "Alt Text:", soup.a['alt']
-        print "href:", soup.a['href']
-        print "all a tag contents", soup.a.contents
-    else:
-        print "No <a> tags in this article."
-        # print soup.find_all(p=re.compile("\[image\d*\]|\[image\d*_left\]|\[image\d*_right\]"))
-        # print soup.find_all('p', text=re.compile(".*image.*"))
-        # print soup.p(text="image")
-        # print soup.p()
-        print soup.find_all('p')
+    # print soup.find_all('a')
+    # if len(soup.find_all('a')) > 0:
+    #     print "a tag atributes:"
+    #     print "Title:", soup.a['title']
+    #     # print "Width:", soup.a['width']
+    #     # print "Height:", soup.a['height']
+    #     # print "Alignment:", soup.a['align']
+    #     # print "Alt Text:", soup.a['alt']
+    #     print "href:", soup.a['href']
+    #     print "all a tag contents", soup.a.contents
+    # else:
+    #     print "No <a> tags in this article."
+    #     # print soup.find_all(p=re.compile("\[image\d*\]|\[image\d*_left\]|\[image\d*_right\]"))
+    #     # print soup.find_all('p', text=re.compile(".*image.*"))
+    #     # print soup.p(text="image")
+    #     # print soup.p()
+    #     print soup.find_all('p')
+    #
+    # print "==============================\n=============================="
 
-    print "==============================\n=============================="
-
-    print soup.find_all('img')
-    if len(soup.find_all('img')) > 0:
-        print "image html atributes:"
-        print "Src:", soup.img['src']
-        print "Width:", soup.img['width']
-        print "Height:", soup.img['height']
-        print "Alignment:", soup.img['align']
-        print "Alt Text:", soup.img['alt']
-    else:
-        print "No <img> tags in this article."
-        # print soup.find_all(p=re.compile("\[image\d*\]|\[image\d*_left\]|\[image\d*_right\]"))
-        # print soup.find_all('p', text=re.compile(".*image.*"))
-        # print soup.p(text="image")
-        # print soup.p()
-        print soup.find_all('p')
+    # print soup.find_all('img')
+    # if len(soup.find_all('img')) > 0:
+    #     print "image html atributes:"
+    #     print "Src:", soup.img['src']
+    #     print "Width:", soup.img['width']
+    #     print "Height:", soup.img['height']
+    #     print "Alignment:", soup.img['align']
+    #     print "Alt Text:", soup.img['alt']
+    # else:
+    #     print "No <img> tags in this article."
+    #     # print soup.find_all(p=re.compile("\[image\d*\]|\[image\d*_left\]|\[image\d*_right\]"))
+    #     # print soup.find_all('p', text=re.compile(".*image.*"))
+    #     # print soup.p(text="image")
+    #     # print soup.p()
+    #     print soup.find_all('p')
         
 
     p = new_p(introtext, sid[:8], imgs, img_nums)
+    print "Returned para"
     print p
-    print "==============================\n=============================="
+    # print "==============================\n=============================="
     # Typical pattern if image is hardcoded:
     # <img width="300" height="132" align="right" src="http://www.kilohotel.com/rv8/images/articles/20030507210918708_1.jpg" alt="">
     
@@ -212,6 +282,7 @@ def new_p(p, date, imgs, img_nums):
     # sample hard coded image with thumbnail <a href="images/20141013153858942_2_original.jpg" title="View unscaled image"><img width="299" height="199" align="left" src="images/20141013153858942_2.jpg" alt=""></a>
     # joomla equivalent <a href="images/20141013/20141013153858942_2.jpg" class="modal" title="View unscaled image"><img style="margin: 5px; float: left;" src="images/20141013/20141013153858942_2.jpg"  alt=""/>
     
+     
     img_codes=[]
     image_dir = base_img_dir + date
     os.mkdir(image_dir, 0o775)
@@ -235,9 +306,12 @@ def new_p(p, date, imgs, img_nums):
         geeklog_code_right = '[image' + str(img_nums[n]) + '_right]'
         geeklog_code_no_align = '[image' + str(img_nums[n]) + ']'
         
-        joomla_code_left='<a href="' + joomla_img + '" class="modal"><img style="margin: 5px; float: left;" src="' + joomla_thumb + '" /></a>'
-        joomla_code_right='<a href="' + joomla_img + '" class="modal"><img style="margin: 5px; float: right;" src="' + joomla_thumb + '" /></a>'
-        joomla_code_no_align='<a href="' + joomla_img + '" class="modal"><img style="margin: 5px;" src="' + joomla_thumb + '" /></a>'
+        # joomla_code_left='<a href="' + joomla_img + '" class="modal"><img style="margin: 5px; float: left;" src="' + joomla_thumb + '" /></a>'
+        # joomla_code_right='<a href="' + joomla_img + '" class="modal"><img style="margin: 5px; float: right;" src="' + joomla_thumb + '" /></a>'
+        # joomla_code_no_align='<a href="' + joomla_img + '" class="modal"><img style="margin: 5px;" src="' + joomla_thumb + '" /></a>'
+        joomla_code_left='<a href="' + joomla_img + '"><img style="margin: 5px; float: left;" src="' + joomla_thumb + '" /></a>'
+        joomla_code_right='<a href="' + joomla_img + '"><img style="margin: 5px; float: right;" src="' + joomla_thumb + '" /></a>'
+        joomla_code_no_align='<a href="' + joomla_img + '"><img style="margin: 5px;" src="' + joomla_thumb + '" /></a>'
         
         joomla_img_path = joomla_img_dir + date + "/"
         p=p.replace(geeklog_code_left, joomla_code_left)
@@ -245,15 +319,36 @@ def new_p(p, date, imgs, img_nums):
         p=p.replace(geeklog_code_no_align, joomla_code_no_align)
         p=p.replace(hard_code_gl_img_dir, joomla_img_path)
     
+    p=p.replace('\n', '').replace('\r', '')    
+    soup = BeautifulSoup(p,"html5lib")
+    global a_tag
+    a_tag=soup('a')
+    # print a_tag
+    for n, item in enumerate(a_tag):
+        # print type(item)
+        # print item
+        # item = r'<a href="images/20141216/20141216012305720_1_original.jpg"><img src="images/20141216/20141216012305720_1.jpg" style="margin: 5px; float: left;"/></a>'
+        if thumbnail.match(str(item)):
+            print "thumbnail present"
+            a_tag[n]['class']='modal'
+        else:
+            print "no thumbnail present"
+                
+                
+    print soup
+        
+         
+    
     # except Exception as inst:
     #     print type(inst)     # the exception instance
     #     print inst           # __str__ allows args to be printed directly
-
-    return p
+    
+    return str(soup.body.contents)[1:-1]
     
 
 # parse_all()
-# parse_one(20141216012305720) # new article
-# parse_one(20030507210918708) # old article with images in Geelog format
+# parse_one(20141216012305720) # new article, with [image1_left] codes
+# parse_one(20030507210918708) # old article with images in Geelog format, and no thumbnails
 # parse_one(2002102621491281) # very first article, with hard coded images
-parse_one(20141013153858942) #  sample with hard coded images and thumbnails
+# parse_one(20141013153858942) #  sample with hard coded images and thumbnails - need to add class="modal"
+parse_one(20030701205830485) # no images
