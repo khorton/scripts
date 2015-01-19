@@ -140,61 +140,81 @@ thumbnail=re.compile('.*_original.*')
 
 
 
-def parse_all(csv_file_name='GL_export.csv'):
+def parse_all(csv_file_name='/Users/kwh/temp/GL_export.csv'):
     
-    with open(csv_file_name, 'wb') as csvfile:
-        GLwriter = csv.writer(csvfile)
+    # with open(csv_file_name, 'wb') as csvfile:
+    #     GLwriter = csv.writer(csvfile)
+    csvfile = open(csv_file_name, 'wb') 
+    GLwriter = csv.writer(csvfile)
         
-        GLwriter.writerow(['Title', 'Section', 'Category', 'Intro', 'Body', 'Date'])
+    GLwriter.writerow(['Title', 'catid', 'Section', 'introtext', 'fulltext', 'created', 'created_by', 'hits', 'state', 'modified date', 'start publishing', 'finish publishing', 'created_by_alias', 'access', 'featured', 'language', 'alias'])
     
-    c.execute("SELECT sid, uid, date, title, introtext, bodytext, hits, comments FROM gl_stories WHERE export_flag=0")
+    c.execute("SELECT sid, uid, date, title, introtext, bodytext, hits, comments FROM gl_stories WHERE export_flag=0 limit 1000")
     story_array = c.fetchmany(2000)
-    n = 4
+
     for row in story_array:
-        sid, uid, date, title, introtext, bodytext, hits, comments = row
+        sid, uid, pub_date, title, introtext, bodytext, hits, comments = row
+        pub_date = str(pub_date)
+        date_tag = pub_date[0:4] + pub_date[5:7] + pub_date[8:10]
+        print "SID=", sid, "Date=", date_tag, pub_date
     
         # get topic id
         c.execute("SELECT tid, id from gl_topic_assignments WHERE id = %s", sid)
         tid, id = c.fetchone()
+        
+        if tid == "General":
+            tid = 8
+        elif tid == "Tail":
+            tid = 10
+        elif tid == "Wing":
+            tid = 11
+        elif tid == "fuselage":
+            tid = 12
+        elif tid == "finishkit":
+            tid = 13
+        elif tid == "Engine":
+            tid = 14
+        elif tid == "Cowling":
+            tid = 15
+        elif tid == "electrical":
+            tid = 16
+        elif tid == "instpanel":
+            tid = 17
+        elif tid == "final":
+            tid = 18
+        elif tid == "Flighttest":
+            tid = 19
+        elif tid == "Paint":
+            tid = 20
+        elif tid == "wisdom":
+            tid = 21
+        elif tid == "accident":
+            tid = 22
+            
     
         # get story images, if any
         c.execute("SELECT ai_img_num, ai_filename FROM gl_article_images WHERE ai_sid=%s", id)
         img_array = c.fetchmany(20)
+        imgs=[]
+        img_nums=[]
+        img_alts=[]
         if c.rownumber > 0:
-            print "Story Images:"
+            # print "Story Images:"
             for row in img_array:
                 ai_img_num, ai_filename = row
-                print ai_img_num, ai_filename
-        else:
-            print "no images"
+                # print ai_img_num, ai_filename
+                imgs.append(ai_filename)
+                img_nums.append(ai_img_num)
     
-        print "Story ID=", sid
-        # print "ID =", id
-        # print "Topic=", tid
-        # print "uid=", uid
-        print "Story Date/Time=", date
-        print "Title=", title
-        print "Intro Text=", introtext
-        # print "Body Text =", bodytext
-        # print "Hits =", hits
-    
-        soup = BeautifulSoup(introtext,"html5lib")
-        print "image html:"
-        print soup.find_all('img')
-    
-        print "Src:", soup.img['src']
-        print "Width:", soup.img['width']
-        print "Height:", soup.img['height']
-        print "Alignment:", soup.img['align']
-        print "Alt Text:", soup.img['alt']
-        print "==============================\n=============================="
-        # Typical pattern if image is hardcoded:
-        # <img width="300" height="132" align="right" src="http://www.kilohotel.com/rv8/images/articles/20030507210918708_1.jpg" alt="">
+        Joomla_intro, Joomla_body = new_p(introtext, bodytext, date_tag, imgs, img_nums)
+        
+        GLwriter.writerow([title.encode('utf-8'), tid, 'No parent', Joomla_intro.encode('utf-8'), Joomla_body.encode('utf-8'), pub_date, 431, hits, 1, pub_date, pub_date, '0000-00-00 00:00:00', '', 1, 1, '*', sid])
+        c.execute("UPDATE gl_stories SET export_flag=1 WHERE sid =%s", sid)
+        
+        
 
+    csvfile.close()
 
-        n -= 1
-        if n < 1:
-            sys.exit()
 
 
 def parse_one(sid):
@@ -218,58 +238,6 @@ def parse_one(sid):
             # print ai_img_num, ai_filename
             imgs.append(ai_filename)
             img_nums.append(ai_img_num)
-    # else:
-    #     print "no images in database"
-
-    # print "Story ID=", sid
-    # print "ID =", id
-    # print "Topic=", tid
-    # print "uid=", uid
-    # print "Story Date/Time=", date
-    # print "Short Date=", sid[:8]
-    # print "Title=", title
-    # print "Intro Text=", introtext
-    # print "Body Text =", bodytext
-    # print "Hits =", hits
-    # print "==============================\n=============================="
-
-    # soup = BeautifulSoup(introtext,"html5lib")
-
-    # print soup.find_all('a')
-    # if len(soup.find_all('a')) > 0:
-    #     print "a tag atributes:"
-    #     print "Title:", soup.a['title']
-    #     # print "Width:", soup.a['width']
-    #     # print "Height:", soup.a['height']
-    #     # print "Alignment:", soup.a['align']
-    #     # print "Alt Text:", soup.a['alt']
-    #     print "href:", soup.a['href']
-    #     print "all a tag contents", soup.a.contents
-    # else:
-    #     print "No <a> tags in this article."
-    #     # print soup.find_all(p=re.compile("\[image\d*\]|\[image\d*_left\]|\[image\d*_right\]"))
-    #     # print soup.find_all('p', text=re.compile(".*image.*"))
-    #     # print soup.p(text="image")
-    #     # print soup.p()
-    #     print soup.find_all('p')
-    #
-    # print "==============================\n=============================="
-
-    # print soup.find_all('img')
-    # if len(soup.find_all('img')) > 0:
-    #     print "image html atributes:"
-    #     print "Src:", soup.img['src']
-    #     print "Width:", soup.img['width']
-    #     print "Height:", soup.img['height']
-    #     print "Alignment:", soup.img['align']
-    #     print "Alt Text:", soup.img['alt']
-    # else:
-    #     print "No <img> tags in this article."
-    #     # print soup.find_all(p=re.compile("\[image\d*\]|\[image\d*_left\]|\[image\d*_right\]"))
-    #     # print soup.find_all('p', text=re.compile(".*image.*"))
-    #     # print soup.p(text="image")
-    #     # print soup.p()
-    #     print soup.find_all('p')
         
 
     Joomla_intro, Joomla_body = new_p(introtext, bodytext, sid[:8], imgs, img_nums)
@@ -306,7 +274,11 @@ def new_p(p, p2, date, imgs, img_nums):
      
     img_codes=[]
     image_dir = base_img_dir + date
-    os.mkdir(image_dir, 0o775)
+    try:
+        os.mkdir(image_dir, 0o775)
+    except OSError, error:
+        print error
+        
     for n, img_thumb in enumerate(imgs):
         file_name_parts=img_thumb.split('.')
         img = file_name_parts[0] + '_original.' + file_name_parts[1]
@@ -317,7 +289,10 @@ def new_p(p, p2, date, imgs, img_nums):
         joomla_img_full_path = base_img_dir + date + '/' + img
         joomla_img = joomla_img_dir + date + '/' + img
         
-        shutil.copy2(gl_img_dir + img_thumb, joomla_thumb_full_path)
+        try:
+            shutil.copy2(gl_img_dir + img_thumb, joomla_thumb_full_path)
+        except OSError, error:
+            print error
         try:
             shutil.copy2(gl_img_dir + img, joomla_img_full_path)
         except IOError:
@@ -333,6 +308,7 @@ def new_p(p, p2, date, imgs, img_nums):
         joomla_code_no_align='<a href="' + joomla_img + '"><img style="margin: 5px;" src="' + joomla_thumb + '" /></a>'
         
         joomla_img_path = joomla_img_dir + date + "/"
+        
         p=p.replace(geeklog_code_left, joomla_code_left)
         p=p.replace(geeklog_code_right, joomla_code_right)
         p=p.replace(geeklog_code_no_align, joomla_code_no_align)
@@ -353,6 +329,8 @@ def new_p(p, p2, date, imgs, img_nums):
     # global a_tag
     a_tag=soup('a')
     a_tag2=soup2('a')
+    img_tag = soup('img')
+    img_tag2 = soup2('img')
 
     for n, item in enumerate(a_tag):
         if thumbnail.match(str(item)):
@@ -366,11 +344,14 @@ def new_p(p, p2, date, imgs, img_nums):
             # print "thumbnail present"
             a_tag2[n]['class']='modal'
             
+    for n, item in enumerate(img_tag):
+        img_tag[n]['style']='margin: 5px;'
+            
     # insert Geeklog article publication date in <p> tag as first element of the intro body tag
-    DT='***DateTime:' + date
-    date_tag=soup.new_tag('p')
-    date_tag.insert(0,DT)
-    soup.body.insert(0,date_tag)
+    # DT='***DateTime:' + date
+    # date_tag=soup.new_tag('p')
+    # date_tag.insert(0,DT)
+    # soup.body.insert(0,date_tag)
     
     # convert to single string with the contents of the body tag    
     intro = ''
@@ -385,11 +366,11 @@ def new_p(p, p2, date, imgs, img_nums):
     
     
 
-# parse_all()
+parse_all()
 # parse_one(20141216012305720) # new article, with [image1_left] codes
 # parse_one(20030507210918708) # old article with images in Geelog format, and no thumbnails
 # parse_one(2002102621491281) # very first article, with hard coded images
 # parse_one(20141013153858942) #  sample with hard coded images and thumbnails - need to add class="modal"
 # parse_one(20030701205830485) # no images
 # parse_one(20030824210346818) # with body text too, but no images
-parse_one(20030105192759933) # body, with image, and phpwebhosting url
+# parse_one(20030105192759933) # body, with image, and phpwebhosting url
