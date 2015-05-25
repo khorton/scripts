@@ -12,6 +12,10 @@
 #   The year is 2015.  The year can be changed in the year variable at the top
 #   The full size image width is 2000 and the height is 1333
 #
+# Requirements:
+#   OS X
+#   Pashua http://www.bluem.net/en/mac/pashua/
+#
 
 from __future__ import print_function
 import Pashua
