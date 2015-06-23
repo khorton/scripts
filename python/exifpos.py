@@ -73,7 +73,7 @@ if files:
     print files
     os.execv(command, files)
 else:
-    command2 = "%s *.JPG *.ARW" % command
+    command2 = "%s *.(jpg|JPG|arw|ARW)" % command
     print command2
     
 
