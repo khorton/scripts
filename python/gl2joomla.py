@@ -168,7 +168,7 @@ def parse_all(csv_file_name='/Users/kwh/temp/GL_export.csv'):
             tid = 10
         elif tid == "Wing":
             tid = 11
-        elif tid == "fuselage":
+        elif tid == "Fuselage":
             tid = 12
         elif tid == "finishkit":
             tid = 13

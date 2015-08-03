@@ -21,6 +21,7 @@ from __future__ import print_function
 import Pashua
 import os.path
 import sys
+import os
 
 year = '2015'
 
@@ -31,7 +32,7 @@ conf = """
 # Introductory text
 txt.type = text
 txt.default = This dialog creates a {modals} line to paste into an article \
-on the RV-8 web site in Joomla.
+on the RV-8 web site in Joomla. The {modals} line is copied to the clipboard.
 txt.height = 100
 txt.width = 310
 txt.x = 340
@@ -129,4 +130,10 @@ else:
     # print("Caption is", caption)
 
 print(modal_line)
+
+# os.execl('/usr/bin/pbcopy', modal_line)
+
+outf = os.popen("pbcopy", "w")
+outf.write(modal_line)
+outf.close()
 
