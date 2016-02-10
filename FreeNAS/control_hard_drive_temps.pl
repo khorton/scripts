@@ -1,5 +1,9 @@
 #!/usr/bin/perl
 
+# This script works on SuperMicro X9 and X10 motherboards to control case
+# fan speed mode in response to hard drive temperatures.
+# It should be set as a cron job to run on roughly a five minute interval.
+
 # edit the following values
 $number_of_hard_drives = 5;
 $hd_designator = "/dev/da";
