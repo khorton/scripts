@@ -7,8 +7,8 @@ gr.lat, gr.long = '43.962526','-66.061365'
 gr.elevation = 110
 sun = E.Sun()
   
-gr.date = E.Date('2014/11/30')
-print "Greely Sunrise and Sunset Times\n"
+gr.date = E.Date('2015/11/30')
+print "Brenton Sunrise and Sunset Times\n"
 print "   Date      SunRise    SunSet     HrsUp   Change"
 upp = 0.
 for n in range(415):
