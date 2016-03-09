@@ -96,4 +96,8 @@ if __name__ == '__main__':
 
     # sys.exit()
 
-    
+### pdftk test.pdf update_info metadata.txt output test3.pdf allow printing owner_pw password
+metadata.txt has the following (without the comment characters)
+InfoKey: Subject
+InfoValue: Licensed to Peter Burrowes
+###
