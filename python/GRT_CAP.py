@@ -32,7 +32,7 @@ def convert(fname, pages=None):
     converter.close()
     text = output.getvalue()
     output.close
-    return text 
+    return text
     
 
 def extract_PDF_data(fname):
@@ -51,7 +51,7 @@ def extract_PDF_data(fname):
         # replace slashes with dashes, as slashes are file pathc separators in Unix
         rep_re = re.compile('/')
         IAP_ID = rep_re.sub('-', IAP_ID)
-        print IAP_ID
+        # print IAP_ID
         # type = "AP"
         return airport_ID, IAP_ID + ".pdf"
     except AttributeError:
@@ -89,15 +89,17 @@ if __name__ == '__main__':
         ID, file_name = extract_PDF_data(pdf)
         print ID, file_name
         try:
-            shutil.move(pdf, dir + "/" + ID + "/" + file_name)
+            shutil.move(pdf, dir + "/Plates/" + ID + "/" + file_name)
         except IOError:
-            os.makedirs(dir + "/" + ID)
-            shutil.move(pdf, dir + "/" + ID + "/" + file_name)
+            os.makedirs(dir + "/Plates/" + ID)
+            shutil.move(pdf, dir + "/Plates/" + ID + "/" + file_name)
+            
+        
 
     # sys.exit()
 
-### pdftk test.pdf update_info metadata.txt output test3.pdf allow printing owner_pw password
+""" pdftk test.pdf update_info metadata.txt output test3.pdf allow printing owner_pw password
 metadata.txt has the following (without the comment characters)
 InfoKey: Subject
 InfoValue: Licensed to Peter Burrowes
-###
+"""
