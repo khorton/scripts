@@ -20,7 +20,7 @@ my $pdftk     = '/sw/bin/pdftk';
 
 use File::Temp;
 use Getopt::Std;
-use Cwd;
+# use Cwd;
 use strict;
 
 getopt('o');
@@ -35,7 +35,7 @@ sub process_eCAP {
     # system("$pdftk '$dir/$CAP' burst");
     system("$pdftk '$CAP' burst");
     
-    # process each page
+    # create text version of each page
     my @pages = glob "pg*.pdf";
 
     foreach my $page (@pages){
