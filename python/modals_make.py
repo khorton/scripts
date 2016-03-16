@@ -9,7 +9,7 @@
 # Select the full size image and enter a caption (caption is optional)
 #
 # Assumptions: 
-#   The year is 2015.  The year can be changed in the year variable at the top
+#   The year is 2016.  The year can be changed in the year variable at the top
 #   The full size image width is 2000 and the height is 1333
 #
 # Requirements:
@@ -23,7 +23,7 @@ import os.path
 import sys
 import os
 
-year = '2015'
+year = '2016'
 
 conf = """
 # Set window title
