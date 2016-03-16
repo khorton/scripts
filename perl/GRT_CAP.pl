@@ -99,13 +99,6 @@ sub pick_plate_type {
     }
     
     # Return single-page Aerodrome Charts
-    # problematic charts:
-    # CNL3
-    # CYEM
-    # CYHF
-    # CYKF
-    # CYSH
-    # CYTA
     if ($lines =~ /^(\w{4})-AD/m){
         $Airport_ID = $1;
         if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
@@ -118,7 +111,10 @@ sub pick_plate_type {
     # Return Heliport Charts
     if ($lines =~ /^(\w{4})-HP/m){
         $Airport_ID = $1;
-        return ($Airport_ID, "Heliport Chart.pdf");
+        if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
+            $AD_Name = $1;
+        }
+        return ($Airport_ID, "$AD_Name Heliport Chart.pdf");
     }
     
     # Return Visual Approach Charts
