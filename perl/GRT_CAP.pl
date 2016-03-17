@@ -28,11 +28,13 @@ use File::Remove 'remove';
 use File::Slurp;
 use File::Temp;
 use Getopt::Long;
+# use Getopt::Std;
 use strict;
+
 
 my $verbose = "";
 my $airport_charts = 1;     # include airport and taxi charts by default
-my $airport_name_words = 2; # include two words of the airport name by default
+# my $airport_name_words = 2; # include two words of the airport name by default
 my $copter = "";            # do not include heliport charts and copter approaches
                             # by default
 my $inst_approaches = 1;    # include instrument approaches by default
@@ -41,14 +43,28 @@ my $stars = 1;              # include STARs by default
 my $extras = "";            # do not include extras such as deicing charts, noise
                             # abatement procedures, parking area charts, low vis
                             # taxi charts, 
+my $help = 0;
+my $man = 0;
 
-GetOptions('verbose' => \$verbose, 'airports' => \$airport_charts, 'copter' => \$copter, 'departures' => \$departures, 'stars' => \$stars);
+GetOptions('verbose' => \$verbose, 'airports!' => \$airport_charts, 'copter!' => \$copter, 'departures!' => \$departures, 'stars!' => \$stars);
 
-print "verbose = $verbose\nairports = $airport_charts\ncopter = $copter\ndepartures = $departures\nstars = $stars\n";
-exit;
 
-# my $tempdir = File::Temp->newdir();
-# my $dir = getcwd;
+
+our ($opt_v, $opt_a, $opt_c, $opt_d, $opt_s);
+# getopts('va:cd:s:');
+# getopt('va:c:d:s:');
+
+# if ($opt_v){$verbose = $opt_v}
+# if (($opt_a) && ($opt_a eq "0")){$airport_charts = $opt_a}
+# # if (($opt_c) && ($opt_c eq "0")){$copter = $opt_c}
+# $copter = $opt_c;
+# if (($opt_d) && ($opt_d eq "0")){$departures = $opt_d}
+# if ($departures != 1){$departures = $opt_d}
+# if (($opt_s) && ($opt_s eq "0")){$stars = $opt_s}
+
+# print "verbose = $verbose\nairports = $airport_charts\ncopter = $copter\ndepartures = $departures\nstars = $stars\n";
+
+# exit;
 
 my $dir = getcwd;
 
@@ -71,7 +87,8 @@ sub process_eCAP {
         if (($ID eq "ZZZZ") || ($ID eq "????")){next}
         
         # replace "/" with "-", as "/" is used as path separator
-        $plate_name =~ s/\//-/;
+        $plate_name =~ s/\//-/g;
+        # if ($verbose){print "$plate_name\n"}
         
         mkpath(['Plates'], 0, 0777);
         # if (-e "$dir/Plates/$ID"){print "Dir exists\n"}
@@ -94,8 +111,6 @@ sub pick_plate_type {
     my $AD_Name = "";
     
     my $CAP = shift(@_);
-    # print "Plate is $CAP\n";
-    # open(CAP_FILE, "<&=", $CAP);
     my $lines = read_file($CAP);
 
     # pages 0001 & 0002 are Intro pages, without page numbers printed on the page
@@ -105,29 +120,47 @@ sub pick_plate_type {
     # Look for Roman numeral page numbers, on the Intro pages
     # return ("ZZZZ", "ZZZZ") if $lines =~ /^i[xv]|v?i{0,3} Canada Air Pilot/;
     
-    # Return multi-page Aerodrome Charts
-    if ($lines =~ /^(\w{4})-AD-(\d)/m){
-        $Airport_ID = $1;
-        my $AD_Chart_pg_num = $2;
-        if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
-            $AD_Name = $1;
+    if ($airport_charts){
+        # Return multi-page Aerodrome Charts
+        if ($lines =~ /^(\w{4})-AD-(\d)/m){
+            $Airport_ID = $1;
+            my $AD_Chart_pg_num = $2;
+            if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
+                $AD_Name = $1;
+            }
+            if ($AD_Name =~ /\w{4}-AD (.+)?/){$AD_Name = $1}
+            $AD_Name =~ s/(\w+)/\u\L$1/g;
+            return ($Airport_ID, " $AD_Name Aerodrome Chart.pdf - page $AD_Chart_pg_num.pdf");
         }
-        if ($AD_Name =~ /\w{4}-AD (.+)?/){$AD_Name = $1}
-        $AD_Name =~ s/(\w+)/\u\L$1/g;
-        return ($Airport_ID, " $AD_Name Aerodrome Chart.pdf - page $AD_Chart_pg_num.pdf");
+    
+        # Return single-page Aerodrome Charts
+        if ($lines =~ /^(\w{4})-AD/m){
+            $Airport_ID = $1;
+            if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
+                $AD_Name = $1;
+            }
+            if ($AD_Name =~ /\w{4}-AD (.+)?/){$AD_Name = $1}
+    
+            # Change airport name to title case
+            $AD_Name =~ s/(\w+)/\u\L$1/g;
+            return ($Airport_ID, " $AD_Name Aerodrome Chart.pdf");
+        }
     }
     
-    # Return single-page Aerodrome Charts
-    if ($lines =~ /^(\w{4})-AD/m){
-        $Airport_ID = $1;
-        if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
-            $AD_Name = $1;
+    if ($airport_charts){
+        # Return single-page Taxi Charts
+        if ($lines =~ /(\w{4})-GM-1( |$)/){
+            $Airport_ID = $1;
+            return ($Airport_ID, " Taxi Chart.pdf");
         }
-    if ($AD_Name =~ /\w{4}-AD (.+)?/){$AD_Name = $1}
     
-    # Change airport name to title case
-    $AD_Name =~ s/(\w+)/\u\L$1/g;
-    return ($Airport_ID, " $AD_Name Aerodrome Chart.pdf");
+        # Return multi-page Taxi Charts
+        if ($lines =~ /(\w{4})-GM-1(\w)/){
+            $Airport_ID = $1;
+            my $taxi_chart_num = $2;
+            $taxi_chart_num = ord($taxi_chart_num) - 64;
+            return ($Airport_ID, " Taxi Chart - page $taxi_chart_num.pdf");
+        }
     }
     
     # Return Heliport Charts
@@ -206,7 +239,7 @@ sub pick_plate_type {
                 $plate_title = "SID - $dep_name$dep_num - page $SID_pg_num";
             }
             else {
-                print $Airport_ID, $SID_pg_num;
+                # print $Airport_ID, $SID_pg_num;
                 return ("CCCC", $CAP);
             }
             return ($Airport_ID, $plate_title . ".pdf");
@@ -225,6 +258,13 @@ sub pick_plate_type {
             }
             return ($Airport_ID, $plate_title . ".pdf");
         }
+        
+        # Return Departure Procedures
+        if ($lines =~ /(\w{4})-DP/){
+            $Airport_ID = $1;
+            return ($Airport_ID, "Departure Procedure.pdf");
+        }
+        
     }
     
 
@@ -238,6 +278,8 @@ sub pick_plate_type {
 # print $dir;
 
 foreach our $CAP (@ARGV){
-    print "$CAP\n";
+    print "Processing $CAP\n";
     process_eCAP ($CAP);
 }
+
+
