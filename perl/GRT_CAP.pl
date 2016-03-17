@@ -12,6 +12,9 @@
 # with the -o flag:
 # 
 # perl GRT_CAP.pl -o "/Users/kwh/Documents/GRT Plates" e-CAP4_4February2016.pdf
+#
+# To Do: 1. Add departure procedures
+#        2. Add various extras, such as APD, GM, NOR charts 
 
 # Edit the following path:
 # location of pdftotext
@@ -24,11 +27,26 @@ use File::Path;
 use File::Remove 'remove';
 use File::Slurp;
 use File::Temp;
-use Getopt::Std;
+use Getopt::Long;
 use strict;
 
-getopt('o');
-use vars qw/$opt_o/;
+my $verbose = "";
+my $airport_charts = 1;     # include airport and taxi charts by default
+my $airport_name_words = 2; # include two words of the airport name by default
+my $copter = "";            # do not include heliport charts and copter approaches
+                            # by default
+my $inst_approaches = 1;    # include instrument approaches by default
+my $departures = 1;         # include Departure procedures and SIDs by default
+my $stars = 1;              # include STARs by default
+my $extras = "";            # do not include extras such as deicing charts, noise
+                            # abatement procedures, parking area charts, low vis
+                            # taxi charts, 
+
+GetOptions('verbose' => \$verbose, 'airports' => \$airport_charts, 'copter' => \$copter, 'departures' => \$departures, 'stars' => \$stars);
+
+print "verbose = $verbose\nairports = $airport_charts\ncopter = $copter\ndepartures = $departures\nstars = $stars\n";
+exit;
+
 # my $tempdir = File::Temp->newdir();
 # my $dir = getcwd;
 
@@ -49,7 +67,7 @@ sub process_eCAP {
 
         (my $plate_text = $plate) =~ s/pdf/txt/;
         (my $ID, my $plate_name) = pick_plate_type($plate_text);
-        print "$plate, $ID, $plate_name\n";
+        if ($verbose){print "$plate, $ID, $plate_name\n"}
         if (($ID eq "ZZZZ") || ($ID eq "????")){next}
         
         # replace "/" with "-", as "/" is used as path separator
@@ -95,7 +113,8 @@ sub pick_plate_type {
             $AD_Name = $1;
         }
         if ($AD_Name =~ /\w{4}-AD (.+)?/){$AD_Name = $1}
-        return ($Airport_ID, "$AD_Name Aerodrome Chart.pdf - page $AD_Chart_pg_num.pdf");
+        $AD_Name =~ s/(\w+)/\u\L$1/g;
+        return ($Airport_ID, " $AD_Name Aerodrome Chart.pdf - page $AD_Chart_pg_num.pdf");
     }
     
     # Return single-page Aerodrome Charts
@@ -105,7 +124,10 @@ sub pick_plate_type {
             $AD_Name = $1;
         }
     if ($AD_Name =~ /\w{4}-AD (.+)?/){$AD_Name = $1}
-    return ($Airport_ID, "$AD_Name Aerodrome Chart.pdf");
+    
+    # Change airport name to title case
+    $AD_Name =~ s/(\w+)/\u\L$1/g;
+    return ($Airport_ID, " $AD_Name Aerodrome Chart.pdf");
     }
     
     # Return Heliport Charts
@@ -114,7 +136,8 @@ sub pick_plate_type {
         if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
             $AD_Name = $1;
         }
-        return ($Airport_ID, "$AD_Name Heliport Chart.pdf");
+        $AD_Name =~ s/(\w+)/\u\L$1/g;
+        return ($Airport_ID, " $AD_Name Heliport Chart.pdf");
     }
     
     # Return Visual Approach Charts
@@ -137,69 +160,72 @@ sub pick_plate_type {
         return ($Airport_ID, $plate_title . ".pdf");
     }    
     
-    # Return multi-page STARs
-    if ($lines =~ /^(\w{4})-STAR-\d+(\w)/m){
-        $Airport_ID = $1;
-        my $STAR_pg_num = $2;
-        $STAR_pg_num = ord($STAR_pg_num) - 64;
-        if ($lines =~ /^(\w{3,25}) \w{3,5} ARR \(\w{1,5}\.\w{5}(\d)\)/m){
-            my $arr_name = $1;
-            my $arr_num = $2;
-            $plate_title = "STAR - $arr_name$arr_num - page $STAR_pg_num";
+    if ($stars){
+        # Return multi-page STARs
+        if ($lines =~ /^(\w{4})-STAR-\d+(\w)/m){
+            $Airport_ID = $1;
+            my $STAR_pg_num = $2;
+            $STAR_pg_num = ord($STAR_pg_num) - 64;
+            if ($lines =~ /^(\w{3,25}) \w{3,5} ARR \(\w{1,5}\.\w{5}(\d)\)/m){
+                my $arr_name = $1;
+                my $arr_num = $2;
+                $plate_title = "STAR - $arr_name$arr_num - page $STAR_pg_num";
+            }
+            else {
+                # print $Airport_ID, $STAR_pg_num;
+                return ("AAAA", $CAP);
+            }
+            return ($Airport_ID, $plate_title . ".pdf");
         }
-        else {
-            # print $Airport_ID, $STAR_pg_num;
-            return ("AAAA", $CAP);
+    
+        # Return single-page STARs
+        if ($lines =~ /^(\w{4})-STAR/m){
+            $Airport_ID = $1;
+            if ($lines =~ /^(\w{3,25}) \w{3,5} ARR \(\w{3,5}\.\w{5}(\d)\)/m){
+                my $arr_name = $1;
+                my $arr_num = $2;
+                $plate_title = "STAR - $arr_name$arr_num";
+            }
+            else {
+                # print $Airport_ID, "Single page STAR";
+                return ("BBBB", $CAP);
+            }
+            return ($Airport_ID, $plate_title . ".pdf");
         }
-        return ($Airport_ID, $plate_title . ".pdf");
     }
     
-    # Return single-page STARs
-    if ($lines =~ /^(\w{4})-STAR/m){
-        $Airport_ID = $1;
-        if ($lines =~ /^(\w{3,25}) \w{3,5} ARR \(\w{3,5}\.\w{5}(\d)\)/m){
-            my $arr_name = $1;
-            my $arr_num = $2;
-            $plate_title = "STAR - $arr_name$arr_num";
+    if ($departures){
+        # Return multi-page SIDs
+        if ($lines =~ /^(\w{4})-SID-\d+(\w)/m){
+            $Airport_ID = $1;
+            my $SID_pg_num = $2;
+            $SID_pg_num = ord($SID_pg_num) - 64;
+            if ($lines =~ /^(\w{1,25}) \w{3,5} DEP \(.+?(\d).*\)/m){
+                my $dep_name = $1;
+                my $dep_num = $2;
+                $plate_title = "SID - $dep_name$dep_num - page $SID_pg_num";
+            }
+            else {
+                print $Airport_ID, $SID_pg_num;
+                return ("CCCC", $CAP);
+            }
+            return ($Airport_ID, $plate_title . ".pdf");
         }
-        else {
-            # print $Airport_ID, "Single page STAR";
-            return ("BBBB", $CAP);
-        }
-        return ($Airport_ID, $plate_title . ".pdf");
-    }
     
-    # Return multi-page SIDs
-    if ($lines =~ /^(\w{4})-SID-\d+(\w)/m){
-        $Airport_ID = $1;
-        my $SID_pg_num = $2;
-        $SID_pg_num = ord($SID_pg_num) - 64;
-        if ($lines =~ /^(\w{1,25}) \w{3,5} DEP \(.+?(\d).*\)/m){
-            my $dep_name = $1;
-            my $dep_num = $2;
-            $plate_title = "SID - $dep_name$dep_num - page $SID_pg_num";
+        # Return single-page SIDs
+        if ($lines =~ /^(\w{4})-SID/m){
+            $Airport_ID = $1;
+            if ($lines =~ /(\w{1,25}) \w{3,5} DEP \(\w{3,5}\.\w{5}(\d)\)/){
+                my $dep_name = $1;
+                my $dep_num = $2;
+                $plate_title = "SID - $dep_name$dep_num";
+            }
+            else {
+                return ("DDDD", $CAP);
+            }
+            return ($Airport_ID, $plate_title . ".pdf");
         }
-        else {
-            print $Airport_ID, $SID_pg_num;
-            return ("CCCC", $CAP);
-        }
-        return ($Airport_ID, $plate_title . ".pdf");
     }
-    
-    # Return single-page SIDs
-    if ($lines =~ /^(\w{4})-SID/m){
-        $Airport_ID = $1;
-        if ($lines =~ /(\w{1,25}) \w{3,5} DEP \(\w{3,5}\.\w{5}(\d)\)/){
-            my $dep_name = $1;
-            my $dep_num = $2;
-            $plate_title = "SID - $dep_name$dep_num";
-        }
-        else {
-            return ("DDDD", $CAP);
-        }
-        return ($Airport_ID, $plate_title . ".pdf");
-    }
-    
     
 
     
