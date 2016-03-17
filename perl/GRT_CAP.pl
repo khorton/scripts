@@ -118,7 +118,7 @@ sub pick_plate_type {
     # return ("ZZZZ", "ZZZZ") if ($page_num == "0001" || $page_num == "0002");
     
     # Look for Roman numeral page numbers, on the Intro pages
-    # return ("ZZZZ", "ZZZZ") if $lines =~ /^i[xv]|v?i{0,3} Canada Air Pilot/;
+    return ("ZZZZ", "ZZZZ") if $lines =~ /^i[xv]|v?i{0,3} Canada Air Pilot/;
     
     if ($airport_charts){
         # Return multi-page Aerodrome Charts
@@ -163,16 +163,6 @@ sub pick_plate_type {
         }
     }
     
-    # Return Heliport Charts
-    if ($lines =~ /^(\w{4})-HP/m){
-        $Airport_ID = $1;
-        if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
-            $AD_Name = $1;
-        }
-        $AD_Name =~ s/(\w+)/\u\L$1/g;
-        return ($Airport_ID, " $AD_Name Heliport Chart.pdf");
-    }
-    
     # Return Visual Approach Charts
     if ($lines =~ /^(\w{4})-VAP/m){
         $Airport_ID = $1;
@@ -187,7 +177,7 @@ sub pick_plate_type {
             $plate_title = $1;
         }
         # elsif ($lines =~ /^(.*?RNAV|VOR|NDB.*?)$/m){
-        elsif ($lines =~ /^((COPTER|VOR|NDB|RNAV).*?)$/m){
+        elsif ($lines =~ /^((VOR|NDB|RNAV).*?)$/m){
             $plate_title = $1;
         }
         return ($Airport_ID, $plate_title . ".pdf");
@@ -264,7 +254,27 @@ sub pick_plate_type {
             $Airport_ID = $1;
             return ($Airport_ID, "Departure Procedure.pdf");
         }
+    }
+    
+    if ($copter){
+        # Return Heliport Charts
+        if ($lines =~ /^(\w{4})-HP/m){
+            $Airport_ID = $1;
+            if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
+                $AD_Name = $1;
+            }
+            $AD_Name =~ s/(\w+)/\u\L$1/g;
+            return ($Airport_ID, " $AD_Name Heliport Chart.pdf");
+        }
         
+        # Return Copter Instrument Approach Charts
+        if ($lines =~ /^(\w{4})-IAP/m){
+            $Airport_ID = $1;
+            if ($lines =~ /^((COPTER).*?)$/m){
+                $plate_title = $1;
+                return ($Airport_ID, $plate_title . ".pdf");
+            }
+        }    
     }
     
 
