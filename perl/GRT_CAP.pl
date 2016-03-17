@@ -62,7 +62,7 @@ our ($opt_v, $opt_a, $opt_c, $opt_d, $opt_s);
 # if ($departures != 1){$departures = $opt_d}
 # if (($opt_s) && ($opt_s eq "0")){$stars = $opt_s}
 
-# print "verbose = $verbose\nairports = $airport_charts\ncopter = $copter\ndepartures = $departures\nstars = $stars\n";
+print "verbose = $verbose\nairports = $airport_charts\ncopter = $copter\ndepartures = $departures\nstars = $stars\n";
 
 # exit;
 
@@ -118,7 +118,7 @@ sub pick_plate_type {
     # return ("ZZZZ", "ZZZZ") if ($page_num == "0001" || $page_num == "0002");
     
     # Look for Roman numeral page numbers, on the Intro pages
-    return ("ZZZZ", "ZZZZ") if $lines =~ /^i[xv]|v?i{0,3} Canada Air Pilot/;
+    # return ("ZZZZ", "ZZZZ") if $lines =~ /^i[xv]|v?i{0,3} Canada Air Pilot/;
     
     if ($airport_charts){
         # Return multi-page Aerodrome Charts
@@ -149,13 +149,13 @@ sub pick_plate_type {
     
     if ($airport_charts){
         # Return single-page Taxi Charts
-        if ($lines =~ /(\w{4})-GM-1( |$)/){
+        if ($lines =~ /^(\w{4})-GM-1( |$)/m){
             $Airport_ID = $1;
             return ($Airport_ID, " Taxi Chart.pdf");
         }
     
         # Return multi-page Taxi Charts
-        if ($lines =~ /(\w{4})-GM-1(\w)/){
+        if ($lines =~ /^(\w{4})-GM-1(\w)/m){
             $Airport_ID = $1;
             my $taxi_chart_num = $2;
             $taxi_chart_num = ord($taxi_chart_num) - 64;
@@ -180,6 +180,8 @@ sub pick_plate_type {
         elsif ($lines =~ /^((VOR|NDB|RNAV).*?)$/m){
             $plate_title = $1;
         }
+        # check for copter approach
+        if ($lines =~ /.*COPTER.*/){return ("????", $CAP)}
         return ($Airport_ID, $plate_title . ".pdf");
     }    
     
@@ -189,7 +191,7 @@ sub pick_plate_type {
             $Airport_ID = $1;
             my $STAR_pg_num = $2;
             $STAR_pg_num = ord($STAR_pg_num) - 64;
-            if ($lines =~ /^(\w{3,25}) \w{3,5} ARR \(\w{1,5}\.\w{5}(\d)\)/m){
+            if ($lines =~ /(\w{3,25}) \w{3,5} ARR \(\w{1,5}\.\w{5}(\d)\)/m){
                 my $arr_name = $1;
                 my $arr_num = $2;
                 $plate_title = "STAR - $arr_name$arr_num - page $STAR_pg_num";
@@ -204,7 +206,7 @@ sub pick_plate_type {
         # Return single-page STARs
         if ($lines =~ /^(\w{4})-STAR/m){
             $Airport_ID = $1;
-            if ($lines =~ /^(\w{3,25}) \w{3,5} ARR \(\w{3,5}\.\w{5}(\d)\)/m){
+            if ($lines =~ /(\w{3,25}) \w{3,5} ARR \(\w{3,5}\.\w{5}(\d)\)/m){
                 my $arr_name = $1;
                 my $arr_num = $2;
                 $plate_title = "STAR - $arr_name$arr_num";
@@ -223,7 +225,7 @@ sub pick_plate_type {
             $Airport_ID = $1;
             my $SID_pg_num = $2;
             $SID_pg_num = ord($SID_pg_num) - 64;
-            if ($lines =~ /^(\w{1,25}) \w{3,5} DEP \(.+?(\d).*\)/m){
+            if ($lines =~ /(\w{1,25}) \w{3,5} DEP \(.+?(\d).*\)/m){
                 my $dep_name = $1;
                 my $dep_num = $2;
                 $plate_title = "SID - $dep_name$dep_num - page $SID_pg_num";
@@ -250,7 +252,7 @@ sub pick_plate_type {
         }
         
         # Return Departure Procedures
-        if ($lines =~ /(\w{4})-DP/){
+        if ($lines =~ /^(\w{4})-DP/m){
             $Airport_ID = $1;
             return ($Airport_ID, "Departure Procedure.pdf");
         }
@@ -279,7 +281,7 @@ sub pick_plate_type {
     
 
     
-    return ("ZZZZ", $CAP);
+    return ("????", $CAP);
     
 }
 
