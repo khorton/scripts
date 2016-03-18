@@ -39,18 +39,19 @@ my $copter = "";            # do not include heliport charts and copter approach
                             # by default
 my $inst_approaches = 1;    # include instrument approaches by default
 my $departures = 1;         # include Departure procedures and SIDs by default
+my $noise = 1;              # include Noise Abatement procedures by default
 my $stars = 1;              # include STARs by default
 my $extras = "";            # do not include extras such as deicing charts, noise
                             # abatement procedures, parking area charts, low vis
                             # taxi charts, 
-my $help = 0;
-my $man = 0;
+# my $help = 0;
+# my $man = 0;
 
-GetOptions('verbose' => \$verbose, 'airports!' => \$airport_charts, 'copter!' => \$copter, 'departures!' => \$departures, 'stars!' => \$stars);
+GetOptions('verbose' => \$verbose, 'airports!' => \$airport_charts, 'copter!' => \$copter, 'departures!' => \$departures, 'noise!' => \$noise, 'stars!' => \$stars);
 
 
 
-our ($opt_v, $opt_a, $opt_c, $opt_d, $opt_s);
+our ($opt_v, $opt_a, $opt_c, $opt_d, $opt_n, $opt_s);
 # getopts('va:cd:s:');
 # getopt('va:c:d:s:');
 
@@ -62,7 +63,7 @@ our ($opt_v, $opt_a, $opt_c, $opt_d, $opt_s);
 # if ($departures != 1){$departures = $opt_d}
 # if (($opt_s) && ($opt_s eq "0")){$stars = $opt_s}
 
-print "verbose = $verbose\nairports = $airport_charts\ncopter = $copter\ndepartures = $departures\nstars = $stars\n";
+if ($verbose){print "verbose = $verbose\nairports = $airport_charts\ncopter = $copter\ndepartures = $departures\nnoise = $noise\nstars = $stars\n"}
 
 # exit;
 
@@ -148,18 +149,18 @@ sub pick_plate_type {
     }
     
     if ($airport_charts){
-        # Return single-page Taxi Charts
-        if ($lines =~ /^(\w{4})-GM-1( |$)/m){
-            $Airport_ID = $1;
-            return ($Airport_ID, " Taxi Chart.pdf");
-        }
-    
         # Return multi-page Taxi Charts
         if ($lines =~ /^(\w{4})-GM-1(\w)/m){
             $Airport_ID = $1;
             my $taxi_chart_num = $2;
             $taxi_chart_num = ord($taxi_chart_num) - 64;
             return ($Airport_ID, " Taxi Chart - page $taxi_chart_num.pdf");
+        }
+        
+        # Return single-page Taxi Charts
+        if ($lines =~ /^(\w{4})-GM-1( |$)/m){
+            $Airport_ID = $1;
+            return ($Airport_ID, " Taxi Chart.pdf");
         }
     }
     
@@ -169,19 +170,43 @@ sub pick_plate_type {
         return ($Airport_ID, "Visual Approach Chart.pdf");
     }
     
+    if ($copter){
+        # Copter section must be before Inst Approach section, to avoid that
+        # section from capturing copter charts and returning them even if
+        # the copter option is not selected.
+        # Return Heliport Charts
+        if ($lines =~ /^(\w{4})-HP/m){
+            $Airport_ID = $1;
+            if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
+                $AD_Name = $1;
+            }
+            $AD_Name =~ s/(\w+)/\u\L$1/g;
+            return ($Airport_ID, " $AD_Name Heliport Chart.pdf");
+        }
+        
+        # Return Copter Instrument Approach Charts
+        if ($lines =~ /^(\w{4})-IAP.*/m){
+            $Airport_ID = $1;
+            if ($lines =~ /^((.*?COPTER.*?))$/m){
+                $plate_title = $1;
+                return ($Airport_ID, $plate_title . ".pdf");
+            }
+        }    
+    }
+    
     # Return Instrument Approach Charts
-    if ($lines =~ /^(\w{4})-IAP/m){
+    if ($lines =~ /^(\w{4})-IAP.*/m){
         $Airport_ID = $1;
         # if ($lines =~ /(.{3,}? RWY .{3,})/){
         if ($lines =~ /^(.{3,}? RWY .{2,})$/m){
             $plate_title = $1;
         }
         # elsif ($lines =~ /^(.*?RNAV|VOR|NDB.*?)$/m){
-        elsif ($lines =~ /^((VOR|NDB|RNAV).*?)$/m){
+        elsif ($lines =~ /^((.*?VOR|NDB|RNAV).*?)$/m){
             $plate_title = $1;
         }
         # check for copter approach
-        if ($lines =~ /.*COPTER.*/){return ("????", $CAP)}
+        # if ($lines =~ /.*COPTER.*/){return ("????", $CAP)}
         return ($Airport_ID, $plate_title . ".pdf");
     }    
     
@@ -258,25 +283,19 @@ sub pick_plate_type {
         }
     }
     
-    if ($copter){
-        # Return Heliport Charts
-        if ($lines =~ /^(\w{4})-HP/m){
+    if ($noise){
+        # Return multi-page Noise Abatement Procedures
+        if ($lines =~ /^(\w{4})-NOR-(\d+)/m){
             $Airport_ID = $1;
-            if ($lines =~ /^(.+?), (NL|NS|PE|NB|QC|ON|MB|SK|AB|BC|NU|NT|YK)/m){
-                $AD_Name = $1;
-            }
-            $AD_Name =~ s/(\w+)/\u\L$1/g;
-            return ($Airport_ID, " $AD_Name Heliport Chart.pdf");
+            my $NOR_pg_num = $2;
+            return ($Airport_ID, "Noise Abatement Procedure - page $NOR_pg_num.pdf")
         }
         
-        # Return Copter Instrument Approach Charts
-        if ($lines =~ /^(\w{4})-IAP/m){
+        # Return single-page Noise Abatement Procedures
+        if ($lines =~ /^(\w{4})-NOR/m){
             $Airport_ID = $1;
-            if ($lines =~ /^((COPTER).*?)$/m){
-                $plate_title = $1;
-                return ($Airport_ID, $plate_title . ".pdf");
-            }
-        }    
+            return ($Airport_ID, "Noise Abatement Procedure.pdf")
+        }
     }
     
 
