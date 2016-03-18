@@ -40,18 +40,18 @@ my $copter = "";            # do not include heliport charts and copter approach
 my $inst_approaches = 1;    # include instrument approaches by default
 my $departures = 1;         # include Departure procedures and SIDs by default
 my $noise = 1;              # include Noise Abatement procedures by default
+my $parking_charts = "";    # do not include parking area charts by default
 my $stars = 1;              # include STARs by default
-my $extras = "";            # do not include extras such as deicing charts, noise
-                            # abatement procedures, parking area charts, low vis
-                            # taxi charts, 
+my $extras = "";            # do not include extras such as deicing charts, 
+                            # parking area charts, low vis taxi charts, 
 # my $help = 0;
 # my $man = 0;
 
-GetOptions('verbose' => \$verbose, 'airports!' => \$airport_charts, 'copter!' => \$copter, 'departures!' => \$departures, 'noise!' => \$noise, 'stars!' => \$stars);
+GetOptions('verbose' => \$verbose, 'airports!' => \$airport_charts, 'copter!' => \$copter, 'departures!' => \$departures, 'noise!' => \$noise, 'parking' => \$parking_charts, 'stars!' => \$stars);
 
 
 
-our ($opt_v, $opt_a, $opt_c, $opt_d, $opt_n, $opt_s);
+our ($opt_v, $opt_a, $opt_c, $opt_d, $opt_n, $opt_p, $opt_s);
 # getopts('va:cd:s:');
 # getopt('va:c:d:s:');
 
@@ -63,7 +63,7 @@ our ($opt_v, $opt_a, $opt_c, $opt_d, $opt_n, $opt_s);
 # if ($departures != 1){$departures = $opt_d}
 # if (($opt_s) && ($opt_s eq "0")){$stars = $opt_s}
 
-if ($verbose){print "verbose = $verbose\nairports = $airport_charts\ncopter = $copter\ndepartures = $departures\nnoise = $noise\nstars = $stars\n"}
+if ($verbose){print "verbose = $verbose\nairports = $airport_charts\ncopter = $copter\ndepartures = $departures\nnoise = $noise\nparking charts = $parking_charts\nstars = $stars\n"}
 
 # exit;
 
@@ -154,13 +154,28 @@ sub pick_plate_type {
             $Airport_ID = $1;
             my $taxi_chart_num = $2;
             $taxi_chart_num = ord($taxi_chart_num) - 64;
-            return ($Airport_ID, " Taxi Chart - page $taxi_chart_num.pdf");
+            return ($Airport_ID, "Taxi Chart - page $taxi_chart_num.pdf");
         }
         
         # Return single-page Taxi Charts
         if ($lines =~ /^(\w{4})-GM-1( |$)/m){
             $Airport_ID = $1;
-            return ($Airport_ID, " Taxi Chart.pdf");
+            return ($Airport_ID, "Taxi Chart.pdf");
+        }
+    }
+    
+    if ($parking_charts){
+        # Return multi-page parking charts
+        if ($lines =~ /^(\w{4})-APD-(\d)/m){
+            $Airport_ID = $1;
+            my $parking_chart_num = $2;
+            return ($Airport_ID, "Parking Chart - page $parking_chart_num.pdf");
+        }
+        
+        # Return single-page parking charts
+        if ($lines =~ /^(\w{4})-APD/m){
+            $Airport_ID = $1;
+            return ($Airport_ID, "Parking Chart.pdf");
         }
     }
     
