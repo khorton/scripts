@@ -4,6 +4,9 @@
 # fan speed mode in response to hard drive temperatures.
 # It should be set as a cron job to run on roughly a five minute interval.
 
+# set fan speed to 50% duty cycle (max is 64)
+# ipmitool raw 0x30 0x70 0x66 0x01 0x00 0x32
+
 # edit the following values
 $number_of_hard_drives = 5;
 $hd_designator = "/dev/da";
