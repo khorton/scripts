@@ -138,8 +138,11 @@ sub pick_plate_type {
     # Look for Roman numeral page numbers, on the Intro pages
     # return ("ZZZZ", "ZZZZ") if $lines =~ /^i[xv]|v?i{0,3} Canada Air Pilot/;
 
-    if ($airport_charts) {
-
+    # The order of the following chart recognition items is important. Changing
+    # the order may have unexpected consequences, as the later searches are more 
+    # general than the earlier searches
+    
+    if ($airport_charts){
         # Return multi-page Aerodrome Charts
         if ( $lines =~ /^(\w{4})-AD-(\d)/m ) {
             $Airport_ID = $1;
@@ -170,7 +173,6 @@ sub pick_plate_type {
     }
 
     if ($airport_charts) {
-
         # Return multi-page Taxi Charts
         if ( $lines =~ /^(\w{4})-GM-1(\w)/m ) {
             $Airport_ID = $1;
@@ -239,23 +241,21 @@ sub pick_plate_type {
     if ( $lines =~ /^(\w{4})-IAP.*/m ) {
         $Airport_ID = $1;
 
-        # if ($lines =~ /(.{3,}? RWY .{3,})/){
         if ( $lines =~ /^(.{3,}? RWY .{2,})$/m ) {
             $plate_title = $1;
         }
 
-        # elsif ($lines =~ /^(.*?RNAV|VOR|NDB.*?)$/m){
         elsif ( $lines =~ /^((.*?VOR|NDB|RNAV).*?)$/m ) {
             $plate_title = $1;
         }
-
-        # check for copter approach
-        # if ($lines =~ /.*COPTER.*/){return ("????", $CAP)}
+        # skip copter approach charts, if the copter option is not selected
+        if ( $lines =~ /^((.*?COPTER.*?))$/m ) {
+            if (!$copter){$Airport_ID = "????"}
+        }
         return ( $Airport_ID, $plate_title . ".pdf" );
     }
 
     if ($stars) {
-
         # Return multi-page STARs
         if ( $lines =~ /^(\w{4})-STAR-\d+(\w)/m ) {
             $Airport_ID = $1;
@@ -350,7 +350,6 @@ sub pick_plate_type {
     }
 
     return ( "????", $CAP );
-
 }
 
 # print our @ARGV;
