@@ -2,16 +2,28 @@
 # print Greely SunRise and SunSet times
 
 import ephem as E
+import argparse
+
+parser = argparse.ArgumentParser(description='Calculate sunrise and sunset times for arbitrary locations')
+parser.add_argument('name', type=str, help='location name to display in output')
+parser.add_argument('latitude', type=float, help='degrees latitude, with north = positive')
+parser.add_argument('longitude', type=float, help='degrees longitude, with east = positive')
+parser.add_argument('elevation', type=float, help='site elevation in metres')
+parser.add_argument('start_date', type=str, help='start date, in format YYYY/MM/DD')
+parser.add_argument('num_days', type=int, help='number of days to calculate')
+args = parser.parse_args()
+
 gr=E.Observer()
-gr.lat, gr.long = '45.252833','-75.582127'
-gr.elevation = 110
+gr.lat, gr.long = str(args.latitude),str(args.longitude)
+gr.elevation = args.elevation
 sun = E.Sun()
   
-gr.date = E.Date('2015/11/30')
-print "Greely Sunrise and Sunset Times\n"
+# gr.date = E.Date('2015/11/30')
+gr.date = E.Date(args.start_date)
+print "%s Sunrise and Sunset Times\n" % (args.name)
 print "   Date      SunRise    SunSet     HrsUp   Change"
 upp = 0.
-for n in range(415):
+for n in range(args.num_days):
   dr = gr.next_rising(sun)
   ds = gr.next_setting(sun)
   up = (ds - dr)
