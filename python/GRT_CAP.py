@@ -36,16 +36,26 @@ def convert(fname, pages=None):
     
 
 def extract_PDF_data(fname):
-    text = pdftext = convert(fname)
+    pdftext = convert(fname)
+    
+    try:
+        # Is this a header page?
+        Header_Page_re = re.compile('(x{0:3}v?|i{0:3}) Canada Air Pilot')
+        Header_Page_results = Header_Page_re.search(pdftext)
+        Page_Number = Header_Page_results.group(1)
+        return "ZZZZ", Page_Number
+    except AttributeError:
+        pass
+        
     try:
         # Is this an instrument approach chart?
         AD_Name_re = re.compile('(\w{4})-IAP')
-        AD_results = AD_Name_re.search(text)
+        AD_results = AD_Name_re.search(pdftext)
         airport_ID = AD_results.group(1)
         # print airport_ID,  "Approach Chart"
         
         IAP_Name_re = re.compile('(.+RWY.+)')
-        IAP_results = IAP_Name_re.search(text)
+        IAP_results = IAP_Name_re.search(pdftext)
         IAP_ID = IAP_results.group()
         
         # replace slashes with dashes, as slashes are file pathc separators in Unix
@@ -62,12 +72,28 @@ def extract_PDF_data(fname):
     try:
         # Is this an aerodrome chart?
         AD_Name_re = re.compile('(\w{4})-AD')
-        AD_results = AD_Name_re.search(text)
+        AD_results = AD_Name_re.search(pdftext)
         airport_ID = AD_results.group(1)
         # print "Aerodrome Chart for", airport_ID
         return airport_ID, "Aerodrome Chart.pdf"
     except AttributeError:
-        print("Not an airport chart")
+        # print("Not an airport chart")
+        print pdf, "Not an airport chart"
+        
+        return "ZZZZ", "ZZZZ"
+        
+    try:
+        # Is this a heliport chart?
+        AD_Name_re = re.compile('(\w{4})-AD')
+        AD_results = AD_Name_re.search(pdftext)
+        airport_ID = AD_results.group(1)
+        # print "Aerodrome Chart for", airport_ID
+        return airport_ID, "Aerodrome Chart.pdf"
+    except AttributeError:
+        # print("Not an airport chart")
+        print pdf, "Not an airport chart"
+        
+        return "ZZZZ", "ZZZZ"
         
         
         
@@ -76,9 +102,10 @@ def extract_PDF_data(fname):
 
 
 if __name__ == '__main__': 
-    dir = '/Users/kwh/ownCloud/temp'
+    dir = '/Users/kwh/Downloads/GRT/temp'
     
-    in_file = '/Users/kwh/ownCloud/temp/GRT_CAP_PDFs/test/1e-CAP4_4February2016(1) - Page 15-40.pdf'
+    # in_file = '/Users/kwh/ownCloud/temp/GRT_CAP_PDFs/test/1e-CAP4_4February2016(1) - Page 15-40.pdf'
+    in_file = '/Users/kwh/Downloads/GRT/e-CAP4_4February2016-40.pdf'
     
     return_code = subprocess.call(['pdftk', in_file, 'burst'])
     print return_code
@@ -88,6 +115,8 @@ if __name__ == '__main__':
     for pdf in pdfs:
         ID, file_name = extract_PDF_data(pdf)
         print ID, file_name
+        if ID == "ZZZZ":
+            continue
         try:
             shutil.move(pdf, dir + "/Plates/" + ID + "/" + file_name)
         except IOError:

@@ -76,4 +76,5 @@ else:
     command2 = "%s *.(jpg|JPG|arw|ARW)" % command
     print command2
     
+    
 
