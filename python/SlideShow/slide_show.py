@@ -399,7 +399,7 @@ class PyImp(object):
         self.bye()
 
     def press_s(self, event):
-        self.slideshow()
+        self.slideshow(r=True)
 
     def press_space(self, event):
         if self.r == True:
