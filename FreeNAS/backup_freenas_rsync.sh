@@ -94,7 +94,7 @@
 # User setable default parameters
 #
 export MY_LOGDIR=/var/log/local
-export MY_SOURCE=/mnt/MY_SOURCE_POOL
+export MY_SOURCE=/mnt/main
 #
 # Command line and run time parameters
 #
@@ -248,11 +248,11 @@ echo "" >>${MY_LOGFILE}
 #
 if [ "${MY_BACKUP_ZPOOL}X" = "Backup750X" ]; then
     echo "  rsync -aHSX --delete --stats \ " >>${MY_LOGFILE}
-    echo "    --exclude='Media/Videos' --exclude='./Media_archive' \ " >>${MY_LOGFILE}
+    echo "    --exclude='afp_test' --exclude='BUs' --exclude='oc-20170607-clone'  --exclude='plex_temp' --exclude='temp'  --exclude='test' \ " >>${MY_LOGFILE}
     echo "    ${MY_SOURCE}/ \ " >>${MY_LOGFILE}
     echo "    ${MY_BACKUP_PATH}/" >>${MY_LOGFILE}
     rsync -aHSX --delete --stats \
-      --exclude='Media/Videos' --exclude='./Media_archive' \
+      --exclude='afp_test' --exclude='BUs' --exclude='oc-20170607-clone'  --exclude='plex_temp' --exclude='temp'  --exclude='test' \
       ${MY_SOURCE}/ \
       ${MY_BACKUP_PATH}/ 2>&1 \
       | awk '{print "  "$0}' >>${MY_LOGFILE}
