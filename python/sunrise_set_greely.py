@@ -1,19 +1,28 @@
 #! /sw/bin/python2.7
 # print Greely SunRise and SunSet times
 
+loc = "WA"
+# loc = "ON"
+
 import ephem as E
 gr=E.Observer()
 gr.lat, gr.long = '45.252833','-75.582127'
 gr.elevation = 110
 sun = E.Sun()
   
-gr.date = E.Date('2016/11/30')
+gr.date = E.Date('2017/11/30')
 print "Greely Sunrise and Sunset Times\n"
 print "   Date      SunRise    SunSet     HrsUp   Change"
 upp = 0.
 for n in range(415):
-  dr = gr.next_rising(sun)
-  ds = gr.next_setting(sun)
+  if loc == "ON":
+    dr = gr.next_rising(sun)
+    ds = gr.next_setting(sun)
+  elif loc == "WA":
+    dr = E.Date(gr.next_rising(sun) + 3 * E.hour)
+    ds = E.Date(gr.next_setting(sun) + 3 * E.hour)
+  else:
+    print "Unknown location"
   up = (ds - dr)
   if up < 0:
     up += 1

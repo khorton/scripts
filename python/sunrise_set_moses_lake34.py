@@ -3,22 +3,15 @@
 
 import ephem as E
 ml=E.Observer()
-#ml.lat, ml.long = '47.185188','-119.382082' # 6621 Road E.2 NE location
-ml.lat, ml.long = '47.2086666','-119.3191666' # KMWH location
-ml.elevation = 362 # KMWH elevation 1189 ft
+ml.lat, ml.long = '47.185188','-119.382082'
+#ml.lat, ml.long = '47.2085833','-119.3191389' # KMWH location
+ml.elevation = 362 # KMWH elevation
 sun = E.Sun()
   
-<<<<<<< HEAD
-gr.date = E.Date('2018/11/01')
-print "6621 Road E.2 NE Sunrise and Sunset Times\n"
+ml.date = E.Date('2018/03/01')
+print("6621 Road E.2 NE Sunrise and Sunset Times\n")
 # print "KMWH Sunrise and Sunset Times\n"
-print "   Date      SunRise    SunSet     HrsUp   Change"
-=======
-ml.date = E.Date('2018/01/01')
-#print "6621 Road E.2 NE Sunrise and Sunset Times\n"
-print ("KMWH Sunrise and Sunset Times\n")
-print ("   Date      SunRise    SunSet     HrsUp   Change")
->>>>>>> 9ab2a232780a8fa7d8d3cd2a9bdde9ab1680e5e3
+print("   Date      SunRise    SunSet     HrsUp   Change")
 upp = 0.
 for n in range(415):
   dr = ml.next_rising(sun)
@@ -50,6 +43,6 @@ for n in range(415):
   rise_text = E.localtime(dr).strftime('%d %b %Y  %H:%M:%S')
   # rise_az = 
   set_text = E.localtime(ds).strftime('%H:%M:%S')
-  print ("%s  %s  %s  %s%s" % (rise_text, set_text, up_text, sign, chge_text))
+  print("%s  %s  %s  %s%s" % (rise_text, set_text, up_text, sign, chge_text))
   # print E.localtime(dr).strftime('%d %b %Y %H:%M:%S'), E.localtime(ds).strftime('%H:%M:%S')
   ml.date += 1

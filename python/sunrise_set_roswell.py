@@ -1,29 +1,26 @@
 #! /sw/bin/python2.7
-# print Brenton SunRise and SunSet times
+# print Roswell, NM SunRise and SunSet times
 
-#loc = "ON"
-#loc = "NS"
 loc = "WA"
+# loc = "NM"
+
 import ephem as E
 gr=E.Observer()
-gr.lat, gr.long = '43.962526','-66.061365'
-gr.elevation = 20
+gr.lat, gr.long = '33.2998697','-104.5293976'
+gr.elevation = 1118.9
 sun = E.Sun()
   
-gr.date = E.Date('2015/11/30')
-print "Brenton Sunrise and Sunset Times\n"
+gr.date = E.Date('2018/07/12')
+print "Roswell Sunrise and Sunset Times\n"
 print "   Date      SunRise    SunSet     HrsUp   Change"
 upp = 0.
 for n in range(415):
-  if loc == "NS":
+  if loc == "NM":
     dr = gr.next_rising(sun)
     ds = gr.next_setting(sun)
-  elif loc == "ON":
-    dr = E.Date(gr.next_rising(sun) + E.hour)
-    ds = E.Date(gr.next_setting(sun) + E.hour)
   elif loc == "WA":
-    dr = E.Date(gr.next_rising(sun) + 4 * E.hour)
-    ds = E.Date(gr.next_setting(sun) + 4 * E.hour)
+    dr = E.Date(gr.next_rising(sun) + 1 * E.hour)
+    ds = E.Date(gr.next_setting(sun) + 1 * E.hour)
   else:
     print "Unknown location"
   up = (ds - dr)
