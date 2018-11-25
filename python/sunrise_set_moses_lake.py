@@ -8,7 +8,7 @@ gr.lat, gr.long = '47.185188','-119.382082'
 gr.elevation = 362 # KMWH elevation
 sun = E.Sun()
   
-gr.date = E.Date('2017/11/30')
+gr.date = E.Date('2018/11/01')
 print "6621 Road E.2 NE Sunrise and Sunset Times\n"
 # print "KMWH Sunrise and Sunset Times\n"
 print "   Date      SunRise    SunSet     HrsUp   Change"

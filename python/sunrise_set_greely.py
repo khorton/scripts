@@ -7,7 +7,7 @@ gr.lat, gr.long = '45.252833','-75.582127'
 gr.elevation = 110
 sun = E.Sun()
   
-gr.date = E.Date('2015/11/30')
+gr.date = E.Date('2016/11/30')
 print "Greely Sunrise and Sunset Times\n"
 print "   Date      SunRise    SunSet     HrsUp   Change"
 upp = 0.
