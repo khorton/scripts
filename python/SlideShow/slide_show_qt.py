@@ -37,6 +37,7 @@ class ControlPanel(QWidget):
     def initUI(self):
         global imageFiles
         imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2(path)       # image filenames in current path
+        print("random_index =", self.random_index)
         try:
             self.mark_file = open('/home/kwh/temp/mark_file.txt', 'w')
         except IOError:
@@ -56,7 +57,8 @@ class ControlPanel(QWidget):
         DirButton = QPushButton("Dir")
         QuitButton = QPushButton("Quit")
 
-        RandomSlideShowButton.clicked.connect(self.SlideShow)
+        SlideShowButton.clicked.connect(lambda: self.SlideShow(self.random_index, self.path, self.max_index, r=0))
+        RandomSlideShowButton.clicked.connect(lambda: self.SlideShow(self.random_index, self.path, self.max_index, r=1))
         dirName = DirButton.clicked.connect(self.openFileNameDialog)
         QuitButton.clicked.connect(self.Quit)
 
@@ -93,9 +95,9 @@ class ControlPanel(QWidget):
             imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2(self.dirName)
             print(imageFiles)
         
-    def SlideShow(self):
+    def SlideShow(self, random_index, path, max_index, r):
         print(imageFiles)
-        self.next=SlideShowWindow(self.width,self.height,self.pixel_ratio,imageFiles)
+        self.next=SlideShowWindow(self.width,self.height,self.pixel_ratio,imageFiles, self.random_index, self.path, self.max_index, r)
 
     def Quit(self):
         sys.exit(app.exec_())
@@ -105,6 +107,8 @@ class ControlPanel(QWidget):
             self.Quit()
         if e.key() == Qt.Key_Q:
             self.Quit()
+        if e.key() == Qt.Key_N:
+            increment_slide()
 
         imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2(path)       # image filenames in current path
         try:
@@ -184,14 +188,63 @@ class ControlPanel(QWidget):
     def checkImageType(self, f):
         "check to see if we have an file with an image extension"
         ext = self.extension(f)
-        chk = [i for i in ['jpg','gif','ppm', 'tif'] if i==ext]
+        chk = [i for i in ['jpg','gif','ppm', 'tif', 'png', 'jpeg'] if i==ext]
         if chk == []: return False
         return True
 
+
+
+class SlideShowWindow(QWidget):
+    
+    def __init__(self, width, height, pixel_ratio, imageFiles, random_index, path, max_index, r):
+        super().__init__()
+        # print('Available screen size: %d x %d @ pixel ratio %f' % (width,height,pixel_ratio))
+        self.width = width
+        self.height = height
+        self.pixel_ratio = pixel_ratio
+        self.max_index = max_index
+        self.random_index = random_index
+        print('Max Index = ', self.max_index)
+        
+        self.slideshow(r)
+        #print("Image File = ", imageFiles[0])
+        #self.ImageWindow(imageFiles[0])
+
+        
+    def ImageWindow(self, image_path):
+        
+        window = QLabel(self)
+        window.clear()
+        window.repaint()
+
+        #image_path = '/Users/kwh/Pictures/CGNHK/IMG_0379.jpg'
+        pixmap = QPixmap(image_path)
+        pixmap.setDevicePixelRatio(self.pixel_ratio) # https://stackoverflow.com/questions/50127246/pyqt-5-10-enabling-high-dpi-support-for-macos-poor-pixmap-quality
+        pixmap4 = pixmap.scaled(self.width * self.pixel_ratio, self.height * self.pixel_ratio, Qt.KeepAspectRatio)
+        window.setPixmap(pixmap4)
+        
+        self.setGeometry(0, 0, self.width, self.height)
+        self.setWindowTitle(os.path.basename(image_path))   
+        self.repaint() 
+        window.show()
+        self.show()
+
+    def Quit(self):
+        sys.exit(app.exec_())
+
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_Escape:
+            self.close()
+        if e.key() == Qt.Key_Q:
+            self.Quit()
+        if e.key() == Qt.Key_N:
+            self.increment_slide()
+
     def slideshow(self, r=False):
         "setup the slideshow for all found images"
+        global imageFiles
         print("in slideshow, r=", r)
-        if not self.imageFiles: 
+        if not imageFiles: 
             return          # make sure we have some images to play with
 #         if not self.filename: 
 #              self.filename = self.imageFiles[random.randrange(self.max_index)]
@@ -211,104 +264,58 @@ class ControlPanel(QWidget):
 
     def random_slide(self):
         "display a random slide"
+        global imageFiles
         self.random_index_number += 1
         self.slideindex = self.random_index[self.random_index_number]
 #         self.slideindex = random.randrange(self.max_index)
-        self.loadFile(self.imageFiles[self.slideindex])
+        self.ImageWindow(imageFiles[self.slideindex])
         return False
 
     def random_next(self):
         "display the next random slide"
+        global imageFiles
         self.random_index_number += 1
         try:
             self.slideindex = self.random_index[self.random_index_number]
-            self.loadFile(self.imageFiles[self.slideindex])
+            self.ImageWindow(imageFiles[self.slideindex])
         except IndexError:
             self.random_index_number = 0
             self.slideindex = self.random_index[self.random_index_number]
-            self.loadFile(self.imageFiles[self.slideindex])
+            self.ImageWindow(imageFiles[self.slideindex])
         return False
 
     def random_prev(self):
         "display the previous random slide"
+        global imageFiles
         self.random_index_number -= 1
         try:
             self.slideindex = self.random_index[self.random_index_number]
-            self.loadFile(self.imageFiles[self.slideindex])
+            self.ImageWindow(imageFiles[self.slideindex])
         except IndexError:
             self.random_index_number = self.max_index
             self.slideindex = self.random_index[self.random_index_number]
-            self.loadFile(self.imageFiles[self.slideindex])
+            self.ImageWindow(imageFiles[self.slideindex])
         return False
 
     def increment_slide(self):
         "display a higher slide"  
+        global imageFiles
         #print "in increment_slide"      
         self.slideindex += 1
         if self.slideindex > self.max_index:
             self.slideindex = 0
-        self.loadFile(self.imageFiles[self.slideindex])
+            print('Max index hit')
+        self.ImageWindow(imageFiles[self.slideindex])
         return False
 
     def decrement_slide(self):
         "display a lower slide"        
+        global imageFiles
         self.slideindex -= 1
         if self.slideindex < 0:
             self.slideindex = self.max_index
-        self.loadFile(self.imageFiles[self.slideindex])
+        self.ImageWindow(imageFiles[self.slideindex])
         return False
-
-
-class SlideShowWindow(QWidget):
-    
-    def __init__(self, width, height, pixel_ratio, imageFiles):
-        super().__init__()
-        # print('Available screen size: %d x %d @ pixel ratio %f' % (width,height,pixel_ratio))
-        self.width = width
-        self.height = height
-        self.pixel_ratio = pixel_ratio
-        print("Image File = ", imageFiles[0])
-        self.ImageWindow(imageFiles[0])
-        
-    def ImageWindow(self, image_path):
-        # self.statusBar().showMessage('Ready')
-        # SlideShowButton2 = QPushButton("Slide Show 2")
-        # RandomSlideShowButton2 = QPushButton("Random Slide Show")
-        # DirButton2 = QPushButton("Dir")
-        # QuitButton2 = QPushButton("Quit")
-        # 
-        # vbox2 = QVBoxLayout()
-        # vbox2.addWidget(SlideShowButton2)
-        # vbox2.addWidget(RandomSlideShowButton2)
-        # vbox2.addWidget(DirButton2)
-        # vbox2.addWidget(QuitButton2)
-        # vbox2.addStretch(1)
-        # 
-        # hbox2 = QHBoxLayout()
-        # hbox2.addLayout(vbox2)
-        # hbox2.addStretch(1)
-        # 
-        # self.setLayout(hbox2)    
-        
-        window = QLabel(self)
-        #image_path = '/Users/kwh/Pictures/CGNHK/IMG_0379.jpg'
-        pixmap = QPixmap(image_path)
-        pixmap.setDevicePixelRatio(self.pixel_ratio) # https://stackoverflow.com/questions/50127246/pyqt-5-10-enabling-high-dpi-support-for-macos-poor-pixmap-quality
-        pixmap4 = pixmap.scaled(self.width * self.pixel_ratio, self.height * self.pixel_ratio, Qt.KeepAspectRatio)
-        window.setPixmap(pixmap4)
-        
-        self.setGeometry(0, 0, self.width, self.height)
-        self.setWindowTitle(os.path.basename(image_path))    
-        self.show()
-
-    def Quit(self):
-        sys.exit(app.exec_())
-
-    def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Escape:
-            self.close()
-        if e.key() == Qt.Key_Q:
-            self.Quit()
 
 class GlobDirectoryWalker:
     # a forward iterator that traverses a directory tree
