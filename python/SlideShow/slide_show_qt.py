@@ -22,7 +22,7 @@ import random
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QMainWindow, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QApplication, QFileDialog, QLabel)
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import (QPixmap, QImage)
 
 class ControlPanel(QWidget):
     
@@ -107,8 +107,6 @@ class ControlPanel(QWidget):
             self.Quit()
         if e.key() == Qt.Key_Q:
             self.Quit()
-        if e.key() == Qt.Key_N:
-            increment_slide()
 
         imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2(path)       # image filenames in current path
         try:
@@ -214,10 +212,31 @@ class SlideShowWindow(QWidget):
     def ImageWindow(self, image_path):
         
         window = QLabel(self)
-        window.clear()
-        window.repaint()
+
+#        try:
+#            pixmap = QPixmap('/Users/kwh/sw_projects/git/scripts/python/SlideShow/black.jpg')
+#            pixmap.repaint()
+#            pixmap.setDevicePixelRatio(self.pixel_ratio) 
+#            pixmap4 = pixmap.scaled(self.width * self.pixel_ratio, self.height * self.pixel_ratio, Qt.KeepAspectRatio)
+#            window.setPixmap(pixmap4)
+#            window.show()
+#            self.show()
+#        except:
+#            window = QLabel(self)
+#            print('Failed')
+        #window.delete() # no delete method
+        #window.repaint() # not needed
 
         #image_path = '/Users/kwh/Pictures/CGNHK/IMG_0379.jpg'
+        pixmap = QPixmap('/Users/kwh/sw_projects/git/scripts/python/SlideShow/black.jpg')
+        pixmap.setDevicePixelRatio(self.pixel_ratio) 
+        pixmap4 = pixmap.scaled(self.width * self.pixel_ratio, self.height * self.pixel_ratio, Qt.KeepAspectRatio)
+        window.setPixmap(pixmap4)
+        self.setGeometry(0, 0, self.width, self.height)
+        window.show()
+        window.clear()
+        self.show()
+
         pixmap = QPixmap(image_path)
         pixmap.setDevicePixelRatio(self.pixel_ratio) # https://stackoverflow.com/questions/50127246/pyqt-5-10-enabling-high-dpi-support-for-macos-poor-pixmap-quality
         pixmap4 = pixmap.scaled(self.width * self.pixel_ratio, self.height * self.pixel_ratio, Qt.KeepAspectRatio)
@@ -225,7 +244,7 @@ class SlideShowWindow(QWidget):
         
         self.setGeometry(0, 0, self.width, self.height)
         self.setWindowTitle(os.path.basename(image_path))   
-        self.repaint() 
+        # self.repaint() # not needed
         window.show()
         self.show()
 
@@ -238,7 +257,16 @@ class SlideShowWindow(QWidget):
         if e.key() == Qt.Key_Q:
             self.Quit()
         if e.key() == Qt.Key_N:
+            self.random_next()
+        if e.key() == Qt.Key_P:
+            self.random_prev()
+        if e.key() == Qt.Key_Space:
+            self.random_next()
+        if e.key() == Qt.Key_Left:
+            self.decrement_slide()
+        if e.key() == Qt.Key_Right:
             self.increment_slide()
+        
 
     def slideshow(self, r=False):
         "setup the slideshow for all found images"
