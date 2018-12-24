@@ -1,58 +1,202 @@
 #!/opt/local/bin/python3
 # -*- coding: utf-8 -*-
 
-import sys
+import sys, os, random, fnmatch
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem
 from PyQt5.QtGui import QPixmap
-from demoGraphicsView import *
+from slideShowWindow import *
 
 class MyForm(QDialog):
-    def __init__(self):
+    def __init__(self, width, height, pixel_ratio, path):
         super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.i = 0
-        self.files = ['/Users/kwh/Pictures/kwh_pics/KWH01_KP.jpg', '/Users/kwh/Pictures/kwh_pics/KWH01_KP_copy2.jpg', '/Users/kwh/Pictures/kwh_pics/KWH_100.jpg', '/Users/kwh/Pictures/kwh_pics/KWH_100_2.jpg', '/Users/kwh/Pictures/kwh_pics/KWH_125.jpg', '/Users/kwh/Pictures/kwh_pics/KWH_150.jpg', '/Users/kwh/Pictures/kwh_pics/KWH_650.jpg', '/Users/kwh/Pictures/kwh_pics/KWH_80.jpg', '/Users/kwh/Pictures/kwh_pics/KWH_80_2.jpg', '/Users/kwh/Pictures/kwh_pics/X.png']
-        self.scene = QGraphicsScene(self)
-        
+        self.width = width
+        self.height = height
+        self.pixel_ratio = pixel_ratio
+        self.path = path
+        self.imageFiles = []
+        self.slideIndex = 0
+        self.random_index_number = 0
+        self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2() 
+        #self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
 
-   
+        self.scene = QGraphicsScene(self)
+
+        
+        
+    #def getImageNames2(self, path):
+    def getImageNames2(self):
+        "get the names of all images on disc or from the web (which are cached locally)"
+        
+        if not self.path:
+            self.path = os.getcwd()
+        if self.path[-1] != '/': 
+            self.path += '/'
+        # print "Path is:", path, "\n"
+        try:
+            os.listdir(self.path)
+        except:
+            error_dialog = QtWidgets.QErrorMessage()
+            error_dialog.showMessage('Error in path' +self.path) # https://stackoverflow.com/questions/40227047/python-pyqt5-how-to-show-an-error-message-with-pyqt5
+            return [], self.path
+
+        for i in GlobDirectoryWalker(self.path, "*.*"):
+            # print i
+            if os.path.isfile(i):
+                # print "is file"
+                # if self.checkImageType(p): imageFiles.append(p)
+                if self.checkImageType(i): self.imageFiles.append(i)
+            
+        max_index = len(self.imageFiles) - 1
+        # print "max_index = ", max_index
+
+        self.imageFiles.sort()
+
+        random_index = list(range(max_index + 1))
+        # print "random_index = ", random_index
+        random.shuffle(random_index)
+        # print "imageFiles are:\n"
+        # print imageFiles
+        return self.imageFiles, random_index, self.path, max_index
+
+
+
     def slide(self, i):
         self.pixmap = QtGui.QPixmap()
-        self.pixmap.load(self.files[i])
+        self.pixmap.load(self.imageFiles[i])
+        self.pixmap.setDevicePixelRatio(self.pixel_ratio) # https://stackoverflow.com/questions/50127246/pyqt-5-10-enabling-high-dpi-support-for-macos-poor-pixmap-quality
+        self.pixmap4 = self.pixmap.scaled(self.width * self.pixel_ratio, (self.height * self.pixel_ratio)-30, Qt.KeepAspectRatio)
         try:
             self.scene.removeItem(self.item)
         except:
             print("failed to remove item")
-        self.item = QGraphicsPixmapItem(self.pixmap)
+        self.item = QGraphicsPixmapItem(self.pixmap4)
         self.scene.addItem(self.item)
         self.ui.graphicsView.setScene(self.scene)
-    
-    def inc_slide(self, i):
-        print("in inc_slide")
-        i = i + 1
-        if i > 9:
-            i = 0
-        print("i =", i)
 
-        self.slide(i)   
-        return i 
+    def random_next(self):
+        "display the next random slide"
+        self.random_index_number += 1
+        try:
+            self.slideIndex = self.random_index[self.random_index_number]
+            self.slide(self.slideIndex)
+        except IndexError:
+            self.random_index_number = 0
+            self.slideIndex = self.random_index[self.random_index_number]
+            self.slide(self.slideIndex)
+        return False
+
+    def random_prev(self):
+        "display the previous random slide"
+        self.random_index_number -= 1
+        #self.ImageWindow.clear()
+        try:
+            self.slideIndex = self.random_index[self.random_index_number]
+            self.slide(self.slideIndex)
+        except IndexError:
+            self.random_index_number = self.max_index
+            self.slideIndex = self.random_index[self.random_index_number]
+            self.slide(self.slideIndex)
+        return False
+
+    def increment_slide(self):
+        "display a higher slide"  
+        print("in increment_slide")   
+        self.slideIndex += 1
+        if self.slideIndex > self.max_index:
+            self.slideIndex = 0
+            print('Max index hit')
+        self.slide(self.slideIndex)
+        return False
+
+    def decrement_slide(self):
+        "display a lower slide"        
+        self.slideIndex -= 1
+        if self.slideIndex < 0:
+            self.slideIndex = self.max_index
+        self.slide(self.slideIndex)
+        return False
+
+
+
+
+    
+    def checkImageType(self, f):
+        "check to see if we have an file with an image extension"
+        ext = self.extension(f)
+        chk = [i for i in ['jpg','gif','ppm', 'tif', 'png', 'jpeg'] if i==ext]
+        if chk == []: return False
+        return True
+
+    extension = staticmethod(lambda f: f.split('.').pop().lower())
+    filename  = staticmethod(lambda f: f.split('/').pop())
+    
     
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
             self.Quit()
+        if e.key() == Qt.Key_Q:
+            self.Quit()
         if e.key() == Qt.Key_Space:
-            print("increment")
-            self.i = self.inc_slide(self.i)
+            self.i = self.random_next()
+        if e.key() == Qt.Key_N:
+            self.i = self.random_next()
+        if e.key() == Qt.Key_P:
+            self.i = self.random_prev()
+        if e.key() == Qt.Key_Comma:
+            self.decrement_slide()
+        if e.key() == Qt.Key_Period:
+            self.increment_slide()
+        
+        if e.key() == Qt.Key_BracketLeft:
+            self.slideIndex = self.decrement_slide()
             
     def Quit(self):
         sys.exit(app.exec_())
     
+class GlobDirectoryWalker:
+    # a forward iterator that traverses a directory tree
+
+    def __init__(self, directory, pattern="*"):
+        self.stack = [directory]
+        self.pattern = pattern
+        self.files = []
+        self.index = 0
+
+    def __getitem__(self, index):
+        while 1:
+            try:
+                file = self.files[self.index]
+                self.index = self.index + 1
+            except IndexError:
+                # pop next directory from stack
+                self.directory = self.stack.pop()
+                self.files = os.listdir(self.directory)
+                self.index = 0
+            else:
+                # got a filename
+                fullname = os.path.join(self.directory, file)
+                if os.path.isdir(fullname) and not os.path.islink(fullname):
+                    self.stack.append(fullname)
+                if fnmatch.fnmatch(file, self.pattern):
+                    return fullname
+
+
+
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    screen = app.primaryScreen()
+    size = screen.size()
+    rect = screen.availableGeometry()
+    pix_ratio = screen.devicePixelRatio()
+    currentPath = os.getcwd()
     
-    myapp = MyForm()
+    myapp = MyForm(rect.width(), rect.height(), pix_ratio, currentPath)
     myapp.show()
     sys.exit(app.exec_())
