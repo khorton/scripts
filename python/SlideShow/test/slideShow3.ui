@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
@@ -37,8 +37,65 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuSlide_Show">
+    <property name="title">
+     <string>Slide Show</string>
+    </property>
+    <addaction name="actionHelp_H"/>
+    <addaction name="actionDir_D"/>
+    <addaction name="actionStart_Slide_Show"/>
+    <addaction name="actionRandom_Slide_Show_R"/>
+    <addaction name="actionQuit_Q"/>
+   </widget>
+   <addaction name="menuSlide_Show"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionDir_D">
+   <property name="text">
+    <string>&amp;Dir ...</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Image Directory</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionStart_Slide_Show">
+   <property name="text">
+    <string>&amp;Start Slide Show</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionRandom_Slide_Show_R">
+   <property name="text">
+    <string>&amp;Random Slide Show</string>
+   </property>
+   <property name="shortcut">
+    <string>R</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionHelp_H">
+   <property name="text">
+    <string>&amp;Help</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionQuit_Q">
+   <property name="text">
+    <string>&amp;Quit Slide Show</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

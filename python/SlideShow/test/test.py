@@ -20,10 +20,15 @@ class MyForm(QMainWindow):
         self.imageFiles = []
         self.slideIndex = -1
         self.random_index_number = 0
+        self.random = ""
         self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2() 
         #self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
 
         self.scene = QGraphicsScene(self)
+        self.ui.actionStart_Slide_Show.triggered.connect(self.slide_show)
+        self.ui.actionRandom_Slide_Show_R.triggered.connect(self.random_slide_show)
+        #self.actionQuit_Q.triggered.connect(self.Quit())
+        self.show()
 
         
         
@@ -76,7 +81,28 @@ class MyForm(QMainWindow):
         self.item = QGraphicsPixmapItem(self.pixmap4)
         self.scene.addItem(self.item)
         self.ui.graphicsView.setScene(self.scene)
+        
+    def slide_show(self):
+        self.random = 0
+        self.next_slide()
+        
+    def random_slide_show(self):
+        self.random = 1
+        self.next_slide()
+    
 
+    def next_slide(self):
+        if self.random == 0:
+            self.increment_slide()
+        else:
+            self.random_next()
+            
+    def prev_slide(self):
+        if self.random == 0:
+            self.decrement_slide()
+        else:
+            self.random_prev()
+        
     def random_next(self):
         "display the next random slide"
         self.random_index_number += 1
@@ -141,7 +167,7 @@ class MyForm(QMainWindow):
         if e.key() == Qt.Key_Q:
             self.Quit()
         if e.key() == Qt.Key_Space:
-            self.i = self.random_next()
+            self.i = self.next_slide()
         if e.key() == Qt.Key_N:
             self.i = self.random_next()
         if e.key() == Qt.Key_P:
