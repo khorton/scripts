@@ -3,14 +3,14 @@
 
 import sys, os, random, fnmatch
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem
+from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow
 from PyQt5.QtGui import QPixmap
-from slideShowWindow2 import *
+from slideShow3 import *
 
-class MyForm(QDialog):
+class MyForm(QMainWindow):
     def __init__(self, width, height, pixel_ratio, path):
         super().__init__()
-        self.ui = Ui_Dialog()
+        self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.i = 0
         self.width = width

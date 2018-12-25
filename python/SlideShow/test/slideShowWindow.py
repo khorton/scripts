@@ -14,7 +14,7 @@ class Ui_Dialog(object):
         Dialog.setEnabled(True)
         Dialog.resize(1280, 800)
         self.graphicsView = QtWidgets.QGraphicsView(Dialog)
-        self.graphicsView.setGeometry(QtCore.QRect(0, 0, 1280, 800))
+        self.graphicsView.setGeometry(QtCore.QRect(0, 0, 1280, 750))
         self.graphicsView.setObjectName("graphicsView")
 
         self.retranslateUi(Dialog)
