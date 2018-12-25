@@ -5,7 +5,7 @@ import sys, os, random, fnmatch
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem
 from PyQt5.QtGui import QPixmap
-from slideShowWindow import *
+from slideShowWindow2 import *
 
 class MyForm(QDialog):
     def __init__(self, width, height, pixel_ratio, path):
@@ -18,7 +18,7 @@ class MyForm(QDialog):
         self.pixel_ratio = pixel_ratio
         self.path = path
         self.imageFiles = []
-        self.slideIndex = 0
+        self.slideIndex = -1
         self.random_index_number = 0
         self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2() 
         #self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
@@ -68,7 +68,7 @@ class MyForm(QDialog):
         self.pixmap = QtGui.QPixmap()
         self.pixmap.load(self.imageFiles[i])
         self.pixmap.setDevicePixelRatio(self.pixel_ratio) # https://stackoverflow.com/questions/50127246/pyqt-5-10-enabling-high-dpi-support-for-macos-poor-pixmap-quality
-        self.pixmap4 = self.pixmap.scaled(self.width * self.pixel_ratio, (self.height * self.pixel_ratio)-30, Qt.KeepAspectRatio)
+        self.pixmap4 = self.pixmap.scaled(self.width * self.pixel_ratio, (self.height * self.pixel_ratio)-60, Qt.KeepAspectRatio)
         try:
             self.scene.removeItem(self.item)
         except:
