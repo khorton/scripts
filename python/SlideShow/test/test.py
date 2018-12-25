@@ -3,10 +3,18 @@
 
 import sys, os, random, fnmatch
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow
+from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
 from PyQt5.QtGui import QPixmap
 from slideShow3 import *
+#from helpBox import *
 
+#import ipdb; ipdb.set_trace()
+
+helpText = """
+Slide Show 
+
+Dir = File Browser
+"""
 class MyForm(QMainWindow):
     def __init__(self, width, height, pixel_ratio, path):
         super().__init__()
@@ -25,12 +33,25 @@ class MyForm(QMainWindow):
         #self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
 
         self.scene = QGraphicsScene(self)
+        self.ui.actionDir.triggered.connect(self.openFileNameDialog)
         self.ui.actionStart_Slide_Show.triggered.connect(self.slide_show)
-        self.ui.actionRandom_Slide_Show_R.triggered.connect(self.random_slide_show)
+        self.ui.actionRandom_Slide_Show.triggered.connect(self.random_slide_show)
         #self.actionQuit_Q.triggered.connect(self.Quit())
         self.show()
 
+    def openFileNameDialog(self):
         
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
+        if fileName:
+            # print(fileName)
+            self.path = os.path.dirname(fileName)
+            # print(dirName)
+            # return(dirName)
+            self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2()
+            print(self.imageFiles)
+    
         
     #def getImageNames2(self, path):
     def getImageNames2(self):
@@ -80,6 +101,7 @@ class MyForm(QMainWindow):
             print("failed to remove item")
         self.item = QGraphicsPixmapItem(self.pixmap4)
         self.scene.addItem(self.item)
+        myapp.setWindowTitle(os.path.basename(self.imageFiles[i]))
         self.ui.graphicsView.setScene(self.scene)
         
     def slide_show(self):
@@ -176,6 +198,10 @@ class MyForm(QMainWindow):
             self.decrement_slide()
         if e.key() == Qt.Key_Period:
             self.increment_slide()
+        if e.key() == Qt.Key_H:
+            self.helpWindow = HelpText(helpText)
+            #ipdb.pm()
+        
         
         if e.key() == Qt.Key_BracketLeft:
             self.slideIndex = self.decrement_slide()
@@ -210,7 +236,18 @@ class GlobDirectoryWalker:
                 if fnmatch.fnmatch(file, self.pattern):
                     return fullname
 
-
+class HelpText(QDialog):
+    def __init__(self, helpText):
+        super().__init__()
+        self.ui = Ui_Dialog(helpText)
+        self.ui.setupUi(self)
+        print(helpText)
+        #self.setPlaceholderText(helpText)
+        self.show()
+        
+    def Close(self):
+        self.close()
+    
 
 
 

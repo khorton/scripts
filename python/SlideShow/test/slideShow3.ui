@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="enabled">
@@ -41,21 +41,30 @@
     <property name="title">
      <string>Slide Show</string>
     </property>
-    <addaction name="actionHelp_H"/>
-    <addaction name="actionDir_D"/>
+    <addaction name="actionDir"/>
     <addaction name="actionStart_Slide_Show"/>
-    <addaction name="actionRandom_Slide_Show_R"/>
-    <addaction name="actionQuit_Q"/>
+    <addaction name="actionRandom_Slide_Show"/>
+    <addaction name="separator"/>
+    <addaction name="actionNext_Alpha"/>
+    <addaction name="actionPrev_Alpha"/>
+    <addaction name="separator"/>
+    <addaction name="actionNext_Random"/>
+    <addaction name="actionPrev_Random"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
    </widget>
    <addaction name="menuSlide_Show"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionDir_D">
+  <action name="actionDir">
    <property name="text">
-    <string>&amp;Dir ...</string>
+    <string>Dir ...</string>
    </property>
    <property name="toolTip">
     <string>Select Image Directory</string>
+   </property>
+   <property name="shortcut">
+    <string>D</string>
    </property>
    <property name="shortcutVisibleInContextMenu">
     <bool>true</bool>
@@ -63,15 +72,18 @@
   </action>
   <action name="actionStart_Slide_Show">
    <property name="text">
-    <string>&amp;Start Slide Show</string>
+    <string>Start Slide Show</string>
+   </property>
+   <property name="shortcut">
+    <string>S</string>
    </property>
    <property name="shortcutVisibleInContextMenu">
     <bool>true</bool>
    </property>
   </action>
-  <action name="actionRandom_Slide_Show_R">
+  <action name="actionRandom_Slide_Show">
    <property name="text">
-    <string>&amp;Random Slide Show</string>
+    <string>Random Slide Show</string>
    </property>
    <property name="shortcut">
     <string>R</string>
@@ -82,18 +94,50 @@
   </action>
   <action name="actionHelp_H">
    <property name="text">
-    <string>&amp;Help</string>
+    <string>Help</string>
    </property>
    <property name="shortcutVisibleInContextMenu">
     <bool>true</bool>
    </property>
   </action>
-  <action name="actionQuit_Q">
+  <action name="actionQuit">
    <property name="text">
-    <string>&amp;Quit Slide Show</string>
+    <string>Quit Slide Show</string>
    </property>
    <property name="shortcutVisibleInContextMenu">
     <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionNext_Alpha">
+   <property name="text">
+    <string>Next Alpha</string>
+   </property>
+   <property name="shortcut">
+    <string>&gt;</string>
+   </property>
+  </action>
+  <action name="actionPrev_Alpha">
+   <property name="text">
+    <string>Prev Alpha</string>
+   </property>
+   <property name="shortcut">
+    <string>&lt;</string>
+   </property>
+  </action>
+  <action name="actionNext_Random">
+   <property name="text">
+    <string>Next Random</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+N</string>
+   </property>
+  </action>
+  <action name="actionPrev_Random">
+   <property name="text">
+    <string>Prev Random</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+P</string>
    </property>
   </action>
  </widget>
