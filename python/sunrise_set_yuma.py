@@ -1,19 +1,23 @@
 #! /opt/local/bin/python2.7
-# print Sea Club IV SunRise and SunSet times
+# print Yuma, AZ (KNYL) SunRise and SunSet times
 
 import ephem as E
-gr=E.Observer()
-gr.lat, gr.long = '29.158682','-80.972525'
-gr.elevation = 5
+yuma=E.Observer()
+#yuma.lat, yuma.long = '47.185188','-119.382082' # 6621 Road E.2 NE location
+yuma.lat, yuma.long = '32.66','-114.61' # KMWH location
+yuma.elevation = 65 # KNYL elevation 213 ft
 sun = E.Sun()
   
-gr.date = E.Date('2015/01/01')
-print "Sea Club IV Sunrise and Sunset Times\n"
-print "   Date      SunRise    SunSet     HrsUp   Change"
+yuma.date = E.Date('2018/10/15')
+#print "6621 Road E.2 NE Sunrise and Sunset Times\n"
+print ("KNYL (Yuma, AZ) Sunrise and Sunset Times\n")
+print ("   Date      SunRise    SunSet     HrsUp   Change")
 upp = 0.
-for n in range(365):
-  dr = gr.next_rising(sun)
-  ds = gr.next_setting(sun)
+for n in range(415):
+  dr = yuma.next_rising(sun)
+#  azr = yuma.sun.rise_az
+  ds = yuma.next_setting(sun)
+#  azs = yuma.sun.set_az
   up = (ds - dr)
   if up < 0:
     up += 1
@@ -37,7 +41,8 @@ for n in range(365):
   upp = up
   chge_text = '{:1d}:{:02d}'.format(cm, cs)
   rise_text = E.localtime(dr).strftime('%d %b %Y  %H:%M:%S')
+  # rise_az = 
   set_text = E.localtime(ds).strftime('%H:%M:%S')
-  print "%s  %s  %s  %s%s" % (rise_text, set_text, up_text, sign, chge_text)
+  print ("%s  %s  %s  %s%s" % (rise_text, set_text, up_text, sign, chge_text))
   # print E.localtime(dr).strftime('%d %b %Y %H:%M:%S'), E.localtime(ds).strftime('%H:%M:%S')
-  gr.date += 1
+  yuma.date += 1

@@ -1,4 +1,4 @@
-#! /sw/bin/python3.4
+#! /opt/local/bin/python2.7
 # print 6621 Rd E.2 NE, Moses Lake SunRise and SunSet times
 
 import ephem as E
@@ -8,7 +8,7 @@ ml.lat, ml.long = '47.2086666','-119.3191666' # KMWH location
 ml.elevation = 362 # KMWH elevation 1189 ft
 sun = E.Sun()
   
-ml.date = E.Date('2018/01/01')
+ml.date = E.Date('2018/10/15')
 #print "6621 Road E.2 NE Sunrise and Sunset Times\n"
 print ("KMWH Sunrise and Sunset Times\n")
 print ("   Date      SunRise    SunSet     HrsUp   Change")

@@ -1,4 +1,4 @@
-#! /sw/bin/python3.4
+#! /opt/local/bin/python3.4
 # print 6621 Rd E.2 NE, Moses Lake SunRise and SunSet times
 
 import ephem as E
