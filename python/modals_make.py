@@ -23,7 +23,7 @@ import os.path
 import sys
 import os
 
-year = '2016'
+year = '2019'
 
 conf = """
 # Set window title
