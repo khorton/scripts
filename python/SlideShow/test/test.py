@@ -6,15 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
 from PyQt5.QtGui import QPixmap
 from slideShow3 import *
-#from helpBox import *
 
-#import ipdb; ipdb.set_trace()
-
-helpText = """
-Slide Show 
-
-Dir = File Browser
-"""
 class MyForm(QMainWindow):
     def __init__(self, width, height, pixel_ratio, path):
         super().__init__()
@@ -30,30 +22,24 @@ class MyForm(QMainWindow):
         self.random_index_number = 0
         self.random = ""
         self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2() 
-        #self.setChildrenFocusPolicy(QtCore.Qt.NoFocus)
 
         self.scene = QGraphicsScene(self)
         self.ui.actionDir.triggered.connect(self.openFileNameDialog)
         self.ui.actionStart_Slide_Show.triggered.connect(self.slide_show)
         self.ui.actionRandom_Slide_Show.triggered.connect(self.random_slide_show)
-        #self.actionQuit_Q.triggered.connect(self.Quit())
         self.show()
 
+    extension = staticmethod(lambda f: f.split('.').pop().lower())
+    filename  = staticmethod(lambda f: f.split('/').pop())
+    
     def openFileNameDialog(self):
-        
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
         if fileName:
-            # print(fileName)
             self.path = os.path.dirname(fileName)
-            # print(dirName)
-            # return(dirName)
             self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2()
-            print(self.imageFiles)
     
-        
-    #def getImageNames2(self, path):
     def getImageNames2(self):
         "get the names of all images on disc or from the web (which are cached locally)"
         
@@ -61,7 +47,6 @@ class MyForm(QMainWindow):
             self.path = os.getcwd()
         if self.path[-1] != '/': 
             self.path += '/'
-        # print "Path is:", path, "\n"
         try:
             os.listdir(self.path)
         except:
@@ -70,25 +55,16 @@ class MyForm(QMainWindow):
             return [], self.path
 
         for i in GlobDirectoryWalker(self.path, "*.*"):
-            # print i
             if os.path.isfile(i):
-                # print "is file"
-                # if self.checkImageType(p): imageFiles.append(p)
                 if self.checkImageType(i): self.imageFiles.append(i)
             
         max_index = len(self.imageFiles) - 1
-        # print "max_index = ", max_index
 
         self.imageFiles.sort()
 
         random_index = list(range(max_index + 1))
-        # print "random_index = ", random_index
         random.shuffle(random_index)
-        # print "imageFiles are:\n"
-        # print imageFiles
         return self.imageFiles, random_index, self.path, max_index
-
-
 
     def slide(self, i):
         self.pixmap = QtGui.QPixmap()
@@ -112,7 +88,6 @@ class MyForm(QMainWindow):
         self.random = 1
         self.next_slide()
     
-
     def next_slide(self):
         if self.random == 0:
             self.increment_slide()
@@ -167,10 +142,6 @@ class MyForm(QMainWindow):
             self.slideIndex = self.max_index
         self.slide(self.slideIndex)
         return False
-
-
-
-
     
     def checkImageType(self, f):
         "check to see if we have an file with an image extension"
@@ -179,10 +150,6 @@ class MyForm(QMainWindow):
         if chk == []: return False
         return True
 
-    extension = staticmethod(lambda f: f.split('.').pop().lower())
-    filename  = staticmethod(lambda f: f.split('/').pop())
-    
-    
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
             self.Quit()
@@ -200,9 +167,6 @@ class MyForm(QMainWindow):
             self.increment_slide()
         if e.key() == Qt.Key_H:
             self.helpWindow = HelpText(helpText)
-            #ipdb.pm()
-        
-        
         if e.key() == Qt.Key_BracketLeft:
             self.slideIndex = self.decrement_slide()
             
@@ -247,10 +211,6 @@ class HelpText(QDialog):
         
     def Close(self):
         self.close()
-    
-
-
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
