@@ -26,6 +26,9 @@
       <height>800</height>
      </rect>
     </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

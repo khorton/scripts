@@ -24,6 +24,7 @@ class MyForm(QMainWindow):
         self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2() 
 
         self.scene = QGraphicsScene(self)
+        #self.scene.setAlignment(QtCore.Qt.AlignCenter)
         self.ui.actionDir.triggered.connect(self.openFileNameDialog)
         self.ui.actionStart_Slide_Show.triggered.connect(self.slide_show)
         self.ui.actionRandom_Slide_Show.triggered.connect(self.random_slide_show)
@@ -69,6 +70,7 @@ class MyForm(QMainWindow):
 
     def slide(self, i):
         self.pixmap = QtGui.QPixmap()
+        #self.pixmap.setAlignment(QtCore.Qt.AlignCenter)
         self.pixmap.load(self.imageFiles[i])
         self.pixmap.setDevicePixelRatio(self.pixel_ratio) # https://stackoverflow.com/questions/50127246/pyqt-5-10-enabling-high-dpi-support-for-macos-poor-pixmap-quality
         #self.pixmap4 = self.pixmap.scaled(self.width * self.pixel_ratio, (self.height * self.pixel_ratio)-45, Qt.KeepAspectRatio)
