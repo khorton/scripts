@@ -22,7 +22,7 @@ class Ui_MainWindow(object):
         self.graphicsView.setObjectName("graphicsView")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1280, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1280, 0))
         self.menubar.setObjectName("menubar")
         self.menuSlide_Show = QtWidgets.QMenu(self.menubar)
         self.menuSlide_Show.setObjectName("menuSlide_Show")
