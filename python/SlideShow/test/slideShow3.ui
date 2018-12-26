@@ -23,7 +23,7 @@
       <x>0</x>
       <y>0</y>
       <width>1280</width>
-      <height>755</height>
+      <height>800</height>
      </rect>
     </property>
    </widget>
@@ -55,7 +55,6 @@
    </widget>
    <addaction name="menuSlide_Show"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionDir">
    <property name="text">
     <string>Dir ...</string>
