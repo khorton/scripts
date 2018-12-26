@@ -70,7 +70,7 @@ class MyForm(QMainWindow):
         self.pixmap = QtGui.QPixmap()
         self.pixmap.load(self.imageFiles[i])
         self.pixmap.setDevicePixelRatio(self.pixel_ratio) # https://stackoverflow.com/questions/50127246/pyqt-5-10-enabling-high-dpi-support-for-macos-poor-pixmap-quality
-        self.pixmap4 = self.pixmap.scaled(self.width * self.pixel_ratio, (self.height * self.pixel_ratio)-60, Qt.KeepAspectRatio)
+        self.pixmap4 = self.pixmap.scaled(self.width * self.pixel_ratio, (self.height * self.pixel_ratio)-45, Qt.KeepAspectRatio)
         try:
             self.scene.removeItem(self.item)
         except:
