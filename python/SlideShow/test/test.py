@@ -40,7 +40,7 @@ class MyForm(QMainWindow):
         self.fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
         if self.fileName:
             self.path = os.path.dirname(self.fileName)
-            self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2()
+            self.slideIndex = self.imageFiles.index(self.fileName) -1
     
     def getImageNames2(self):
         "get the names of all images on disc or from the web (which are cached locally)"
@@ -86,11 +86,6 @@ class MyForm(QMainWindow):
         
     def slide_show(self):
         self.random = 0
-        try:
-            print(self.fileName)
-            self.slideIndex = self.imageFiles.index(self.fileName)
-        except:
-            self.slideIndex = -1
         self.next_slide()
         
     def random_slide_show(self):
