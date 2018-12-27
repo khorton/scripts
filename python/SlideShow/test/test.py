@@ -37,9 +37,9 @@ class MyForm(QMainWindow):
     def openFileNameDialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
-        if fileName:
-            self.path = os.path.dirname(fileName)
+        self.fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
+        if self.fileName:
+            self.path = os.path.dirname(self.fileName)
             self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2()
     
     def getImageNames2(self):
@@ -86,6 +86,11 @@ class MyForm(QMainWindow):
         
     def slide_show(self):
         self.random = 0
+        try:
+            print(self.fileName)
+            self.slideIndex = self.imageFiles.index(self.fileName)
+        except:
+            self.slideIndex = -1
         self.next_slide()
         
     def random_slide_show(self):
@@ -204,17 +209,17 @@ class GlobDirectoryWalker:
                 if fnmatch.fnmatch(file, self.pattern):
                     return fullname
 
-class HelpText(QDialog):
-    def __init__(self, helpText):
-        super().__init__()
-        self.ui = Ui_Dialog(helpText)
-        self.ui.setupUi(self)
-        print(helpText)
-        #self.setPlaceholderText(helpText)
-        self.show()
-        
-    def Close(self):
-        self.close()
+# class HelpText(QDialog):
+#     def __init__(self, helpText):
+#         super().__init__()
+#         self.ui = Ui_Dialog(helpText)
+#         self.ui.setupUi(self)
+#         print(helpText)
+#         #self.setPlaceholderText(helpText)
+#         self.show()
+#
+#     def Close(self):
+#         self.close()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
