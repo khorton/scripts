@@ -26,6 +26,9 @@
       <height>800</height>
      </rect>
     </property>
+    <property name="mouseTracking">
+     <bool>false</bool>
+    </property>
     <property name="frameShape">
      <enum>QFrame::NoFrame</enum>
     </property>
@@ -56,7 +59,14 @@
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionHelp"/>
+   </widget>
    <addaction name="menuSlide_Show"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="actionDir">
    <property name="text">
@@ -89,14 +99,6 @@
    </property>
    <property name="shortcut">
     <string>R</string>
-   </property>
-   <property name="shortcutVisibleInContextMenu">
-    <bool>true</bool>
-   </property>
-  </action>
-  <action name="actionHelp_H">
-   <property name="text">
-    <string>Help</string>
    </property>
    <property name="shortcutVisibleInContextMenu">
     <bool>true</bool>
@@ -140,6 +142,11 @@
    </property>
    <property name="shortcut">
     <string>Shift+P</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>Slide Show Help</string>
    </property>
   </action>
  </widget>

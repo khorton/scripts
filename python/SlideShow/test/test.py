@@ -22,7 +22,8 @@ class MyForm(QMainWindow):
         self.random_index_number = 0
         self.random = ""
         self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2() 
-
+        self.helpFile = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "instructions.png")
+        print(self.helpFile)
         self.scene = QGraphicsScene(self)
         #self.scene.setAlignment(QtCore.Qt.AlignCenter)
         self.ui.actionDir.triggered.connect(self.openFileNameDialog)
@@ -30,6 +31,7 @@ class MyForm(QMainWindow):
         self.ui.actionRandom_Slide_Show.triggered.connect(self.random_slide_show)
         eventFilter = MouseEventFilter(self.scene)
         self.scene.installEventFilter(eventFilter)
+        self.ui.actionHelp.triggered.connect(self.helpWindow)
         
         #self.show()
         self.showFullScreen()
@@ -88,7 +90,8 @@ class MyForm(QMainWindow):
             print("failed to remove item")
         self.item = QGraphicsPixmapItem(self.pixmap4)
         self.scene.addItem(self.item)
-        myapp.setWindowTitle(os.path.basename(self.imageFiles[i]))
+        #myapp.setWindowTitle(os.path.basename(self.imageFiles[i]))
+        self.setWindowTitle(os.path.basename(self.imageFiles[i]))
         self.ui.graphicsView.setScene(self.scene)
         
     def slide_show(self):
@@ -161,6 +164,24 @@ class MyForm(QMainWindow):
         if chk == []: return False
         return True
 
+    def helpWindow(self):
+        self.pixmap = QtGui.QPixmap()
+        #self.pixmap.setAlignment(QtCore.Qt.AlignCenter)
+        self.pixmap.load(self.helpFile)
+        self.pixmap.setDevicePixelRatio(self.pixel_ratio) # https://stackoverflow.com/questions/50127246/pyqt-5-10-enabling-high-dpi-support-for-macos-poor-pixmap-quality
+        #self.pixmap4 = self.pixmap.scaled(self.width * self.pixel_ratio, (self.height * self.pixel_ratio)-45, Qt.KeepAspectRatio)
+        self.pixmap4 = self.pixmap.scaled(self.width * self.pixel_ratio, (self.height * self.pixel_ratio), Qt.KeepAspectRatio)
+        try:
+            self.scene.removeItem(self.item)
+        except:
+            print("failed to remove item")
+        self.item = QGraphicsPixmapItem(self.pixmap4)
+        self.scene.addItem(self.item)
+        #myapp.setWindowTitle(os.path.basename("Instructions"))
+        self.setWindowTitle(os.path.basename("Instructions"))
+        self.ui.graphicsView.setScene(self.scene)
+        
+
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
             self.Quit()
@@ -177,13 +198,18 @@ class MyForm(QMainWindow):
         if e.key() == Qt.Key_Period:
             self.increment_slide()
         if e.key() == Qt.Key_H:
-            self.helpWindow = HelpText(helpText)
+            self.helpWindow = self.helpWindow()
         if e.key() == Qt.Key_BracketLeft:
             self.slideIndex = self.decrement_slide()
     
     def mousePressEvent(self, e):
-        #print("trapped mouse click")
-        self.next_slide()
+        if e.button() == QtCore.Qt.LeftButton:
+            print("trapped left mouse click")
+            self.next_slide()
+        if e.button() == QtCore.Qt.RightButton:
+            print("trapped right mouse click")
+            self.prev_slide()
+        
     
     def Quit(self):
         sys.exit(app.exec_())
@@ -225,6 +251,8 @@ class MouseEventFilter(QtCore.QObject):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    print("script location =", os.path.dirname(os.path.realpath(sys.argv[0])))
+    print("help location =", os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "instructions.png"))
     screen = app.primaryScreen()
     size = screen.size()
     rect = screen.availableGeometry()
