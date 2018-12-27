@@ -28,6 +28,9 @@ class MyForm(QMainWindow):
         self.ui.actionDir.triggered.connect(self.openFileNameDialog)
         self.ui.actionStart_Slide_Show.triggered.connect(self.slide_show)
         self.ui.actionRandom_Slide_Show.triggered.connect(self.random_slide_show)
+        self.eventFilter = MouseEventFilter(self.scene)
+        self.scene.installEventFilter(self.eventFilter)
+        
         #self.show()
         self.showFullScreen()
 
@@ -158,6 +161,10 @@ class MyForm(QMainWindow):
         if chk == []: return False
         return True
 
+    # @pyqtSlot( )
+    # def on_click(self):
+    #     print('PyQt5 button click')
+
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Escape:
             self.Quit()
@@ -208,17 +215,13 @@ class GlobDirectoryWalker:
                 if fnmatch.fnmatch(file, self.pattern):
                     return fullname
 
-# class HelpText(QDialog):
-#     def __init__(self, helpText):
-#         super().__init__()
-#         self.ui = Ui_Dialog(helpText)
-#         self.ui.setupUi(self)
-#         print(helpText)
-#         #self.setPlaceholderText(helpText)
-#         self.show()
-#
-#     def Close(self):
-#         self.close()
+class MouseEventFilter(QtCore.QObject):
+        def eventFilter(self, obj, event):
+                if event.type() == QtCore.QEvent.GraphicsSceneMousePress:
+                        print("Mouse Click observed")
+                        return True
+                return False                
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
