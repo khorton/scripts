@@ -40,6 +40,10 @@ class MyForm(QMainWindow):
         self.fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
         if self.fileName:
             self.path = os.path.dirname(self.fileName)
+            self.imageFiles = []
+            self.random_index = []
+            self.max_index = []
+            self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2() 
             self.slideIndex = self.imageFiles.index(self.fileName) -1
     
     def getImageNames2(self):
