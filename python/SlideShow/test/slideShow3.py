@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1280, 800)
+        MainWindow.resize(1280, 755)
         MainWindow.setWindowTitle("")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setEnabled(True)
@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
         self.graphicsView.setObjectName("graphicsView")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1280, 0))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1280, 22))
         self.menubar.setObjectName("menubar")
         self.menuSlide_Show = QtWidgets.QMenu(self.menubar)
         self.menuSlide_Show.setObjectName("menuSlide_Show")

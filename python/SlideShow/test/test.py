@@ -12,6 +12,13 @@ class MyForm(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        
+        # overwrite dimesions specified in slideShow3.py, as they are specific to MacBookPro display, and QTDesigner 
+        # has its own idea on what they should be.  This code should work on any size display
+        self.resize(width, height)
+        self.ui.graphicsView.setGeometry(QtCore.QRect(0, 0, width, height))
+        self.ui.menubar.setGeometry(QtCore.QRect(0, 0, width, 0))
+        
         self.i = 0
         self.width = width
         self.height = height
@@ -251,14 +258,16 @@ class MouseEventFilter(QtCore.QObject):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    print("script location =", os.path.dirname(os.path.realpath(sys.argv[0])))
-    print("help location =", os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "instructions.png"))
+    #print("script location =", os.path.dirname(os.path.realpath(sys.argv[0])))
+    #print("help location =", os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "instructions.png"))
     screen = app.primaryScreen()
     size = screen.size()
     rect = screen.availableGeometry()
+    #print("Screen size =", size.width(), "X", size.height())
+    #print("Available screen size =", rect.width(), "X", rect.height())
     pix_ratio = screen.devicePixelRatio()
     currentPath = os.getcwd()
     
-    myapp = MyForm(rect.width(), rect.height(), pix_ratio, currentPath)
+    myapp = MyForm(size.width(), size.height(), pix_ratio, currentPath)
     myapp.show()
     sys.exit(app.exec_())
