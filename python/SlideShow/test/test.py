@@ -7,6 +7,20 @@ from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixm
 from PyQt5.QtGui import QPixmap
 from slideShow3 import *
 
+#######################################################################################################################
+#                                                                                                                     #
+#  Slide Show, uisng PyQT5                                                                                            #
+#                                                                                                                     #
+#######################################################################################################################
+#                                                                                                                     
+# To Do                                                                                                               
+#  1. Test on Mac Mini
+#  2. Figure out how to centre images in display
+#                                                                                                                     
+#                                                                                                                     
+#                                                                                                                     
+#######################################################################################################################
+
 class MyForm(QMainWindow):
     def __init__(self, width, height, pixel_ratio, path):
         super().__init__()
@@ -30,7 +44,7 @@ class MyForm(QMainWindow):
         self.random = ""
         self.imageFiles, self.random_index, self.path, self.max_index = self.getImageNames2() 
         self.helpFile = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "instructions.png")
-        print(self.helpFile)
+        #print(self.helpFile)
         self.scene = QGraphicsScene(self)
         #self.scene.setAlignment(QtCore.Qt.AlignCenter)
         self.ui.actionDir.triggered.connect(self.openFileNameDialog)
