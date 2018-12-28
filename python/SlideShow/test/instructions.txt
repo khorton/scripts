@@ -1,0 +1,37 @@
+Instructions
+
+Select Directory:
+    1. Start in desired directory, or
+    2. Select desired directory using "Slide Show" menu, or
+    3. Tap "D" to bring up file dialog
+    
+Slide show sorted by file name:
+    1. Select "Start Slide Show" from "Slide Show" menu, or
+    2. Tap "S" to start slide show
+    
+    Note: slide show will start from the first file (if file dialog not used),
+          or from selected file (if file dialog was used).
+          
+Random slide show:
+    1. Select "Random Slide Show" from "Slide Show" menu, or
+    2. Tap "R" to start slide show
+
+Quit slide show:
+    1. Tap "Q"
+    
+Advance to Next Slide:
+    1. Tap Space Bar, or
+    2. Click Mouse, or
+    3. Tap ">"
+    
+Backup to Prev Slide:
+    1. Right Click Mouse, or
+    2. Tap "<"
+
+Advance to Next Random:
+    1. Tap "N", or
+    2. Click Mouse, or
+
+Back up to Prev Random
+    1. Tap "P", or
+    2. Right Click Mouse

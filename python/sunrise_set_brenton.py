@@ -1,4 +1,4 @@
-#! /sw/bin/python2.7
+#! /opt/local/bin/python2.7
 # print Brenton SunRise and SunSet times
 
 #loc = "ON"

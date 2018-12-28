@@ -1,4 +1,4 @@
-#! /sw/bin/python2.7
+#! /opt/local/bin/python2.7
 # print Roswell, NM SunRise and SunSet times
 
 loc = "WA"
@@ -10,7 +10,7 @@ gr.lat, gr.long = '33.2998697','-104.5293976'
 gr.elevation = 1118.9
 sun = E.Sun()
   
-gr.date = E.Date('2018/07/12')
+gr.date = E.Date('2018/10/01')
 print "Roswell Sunrise and Sunset Times\n"
 print "   Date      SunRise    SunSet     HrsUp   Change"
 upp = 0.

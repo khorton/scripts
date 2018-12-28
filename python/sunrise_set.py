@@ -1,4 +1,4 @@
-#! /sw/bin/python2.7
+#! /opt/local/bin/python2.7
 # print Greely SunRise and SunSet times
 
 import ephem as E

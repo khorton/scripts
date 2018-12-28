@@ -1,4 +1,4 @@
-#! /sw/bin/python3.4
+#! /opt/local/bin/python3.4
 # Resolute Bay
 # First sunrise of year is 04 Feb
 # Sun last sets on 28 Apr
