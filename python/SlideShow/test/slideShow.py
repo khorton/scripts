@@ -33,7 +33,6 @@ class MyForm(QMainWindow):
         self.ui.graphicsView.setGeometry(QtCore.QRect(0, 0, width, height))
         self.ui.menubar.setGeometry(QtCore.QRect(0, 0, width, 0))
         
-        self.i = 0
         self.width = width
         self.height = height
         self.pixel_ratio = pixel_ratio
@@ -209,11 +208,11 @@ class MyForm(QMainWindow):
         if e.key() == Qt.Key_Q:
             self.Quit()
         if e.key() == Qt.Key_Space:
-            self.i = self.next_slide()
+            self.next_slide()
         if e.key() == Qt.Key_N:
-            self.i = self.random_next()
+            self.random_next()
         if e.key() == Qt.Key_P:
-            self.i = self.random_prev()
+            self.random_prev()
         if e.key() == Qt.Key_Comma:
             self.decrement_slide()
         if e.key() == Qt.Key_Period:
