@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import sys, os, random, fnmatch
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
-from PyQt5.QtGui import QPixmap
-from slideShow3 import *
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
+from PySide2.QtGui import QPixmap
+from slideShow_UI import *
 
 #######################################################################################################################
 #                                                                                                                     #
