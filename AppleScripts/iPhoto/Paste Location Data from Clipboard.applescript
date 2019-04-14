@@ -1,3 +1,5 @@
+property exifToolOriginal : "_original"
+
 tell application "iPhoto"
 	activate
 	try
@@ -23,9 +25,9 @@ tell application "iPhoto"
 		
 		-- Parse clipboard items
 		set lat to item 1 of clip_items as real
-		--display dialog "Latitude = " & lat
+		display dialog "Latitude = " & lat
 		set long to item 2 of clip_items as real
-		--display dialog "Longitude = " & long
+		display dialog "Longitude = " & long
 		set alt to item 3 of clip_items
 		--display dialog "Altitude = " & alt
 		
@@ -68,6 +70,27 @@ Longitude: " & long with title "Confirm Paste" buttons {"Cancel", "Paste"} defau
 					set the longitude to long
 					--set the altitude to alt
 				end tell
+				if lat ³ 0 then
+					northSouth = "N"
+				else
+					northSouth = "S"
+					lat = lat * -1
+				end if
+				
+				if long ³ 0 then
+					eastWest = "E"
+				else
+					eastWest = "W"
+					long = long * -1
+				end if
+				
+				set exifCommand to "/sw/bin/exiftool -GPSMapDatum='WGS-84'" & " -gps:GPSLatitude='" & |lat| & "' -gps:GPSLatitudeRef='" & northSouth Â
+					& "' -gps:GPSLongitude='" & |long| & "' -gps:GPSLongitudeRef='" & eastWest Â
+					& "' -xmp:GPSLatitude='" & |lat| & northSouth & "' -xmp:GPSLongitude='" & |long| & eastWest & "' -xmp:GPSMapDatum='WGS-84'" & " -xmp:GPSVersionID='2.2.0.0'" & image_file & "'"
+				display dialog exifCommand
+				set output to do shell script exifCommand
+				display dialog of output
+				do shell script "rm '" & image_file & "'" & exifToolOriginal
 			end repeat
 			display dialog "Done"
 			--set image_path to image path of item 1 of these_images -- works

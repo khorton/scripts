@@ -9,6 +9,7 @@ import sys
 
 data_in = sys.argv[1]
 lat, lon = data_in.split(',')
+print lat, lon
 
 lat = float(lat)
 lon = float(lon)
