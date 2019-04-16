@@ -13,8 +13,15 @@
 #
 # perl GRT_CAP.pl -o "/Users/kwh/Documents/GRT Plates" e-CAP4_4February2016.pdf
 #
-# To Do: 1. Add departure procedures
-#        2. Add various extras, such as APD, GM, NOR charts
+# To Do: 2. Add various extras, such as APD, GM, NOR charts
+#        3. Add option to specify string (if any) to put before Aerodrome charts
+#        4. Allow script to be run from different directory than that of the 
+#           eCap file
+#
+# Done:  1. Add departure procedures
+#
+#
+# Verion History:
 
 # Edit the following path:
 # location of pdftotext
@@ -26,6 +33,7 @@ use File::Copy;
 use File::Path;
 use File::Remove 'remove';
 use File::Slurp;
+use File::Spec;
 use File::Temp;
 use Getopt::Long;
 
@@ -61,25 +69,21 @@ GetOptions(
 
 our ( $opt_v, $opt_a, $opt_c, $opt_d, $opt_n, $opt_p, $opt_s );
 
-# getopts('va:cd:s:');
-# getopt('va:c:d:s:');
-
-# if ($opt_v){$verbose = $opt_v}
-# if (($opt_a) && ($opt_a eq "0")){$airport_charts = $opt_a}
-# # if (($opt_c) && ($opt_c eq "0")){$copter = $opt_c}
-# $copter = $opt_c;
-# if (($opt_d) && ($opt_d eq "0")){$departures = $opt_d}
-# if ($departures != 1){$departures = $opt_d}
-# if (($opt_s) && ($opt_s eq "0")){$stars = $opt_s}
-
 if ($verbose) {
     print
 "verbose = $verbose\nairports = $airport_charts\ncopter = $copter\ndepartures = $departures\nnoise = $noise\nparking charts = $parking_charts\nstars = $stars\n";
 }
 
+my $usage = "";
+
 # exit;
 
 my $dir = getcwd;
+# print "$dir\n";
+
+# my $ddir = File::Spec->canonpath($ARGV[0]);
+# print $ddir;
+# exit;
 
 sub process_eCAP {
     my $CAP = shift(@_);
@@ -116,11 +120,6 @@ sub process_eCAP {
         # remove($plate_text);
     }
 }
-
-# sub parse_plate {
-#     my $plate = shift;
-#
-# }
 
 sub pick_plate_type {
 
@@ -360,4 +359,6 @@ foreach our $CAP (@ARGV) {
     print "Processing $CAP\n";
     process_eCAP($CAP);
 }
+
+system("zip -r Plates.zip Plates");
 
