@@ -22,11 +22,14 @@
 #
 #
 # Verion History:
+#
+# 2016-03-24  1.0 Original release.  
+# 2019-04-16  1.1 Update paths for MacPorts
 
 # Edit the following path:
 # location of pdftotext
-my $pdftotext = '/sw/bin/pdftotext';
-my $pdftk     = '/sw/bin/pdftk';
+my $pdftotext = '/opt/local/bin/pdftotext';
+my $pdftk     = '/opt/local/bin/pdftk';
 
 use Cwd;
 use File::Copy;
