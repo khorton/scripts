@@ -28,8 +28,10 @@
 
 # Edit the following path:
 # location of pdftotext
+
 my $pdftotext = '/opt/local/bin/pdftotext';
 my $pdftk     = '/opt/local/bin/pdftk';
+
 
 use Cwd;
 use File::Copy;
@@ -39,9 +41,21 @@ use File::Slurp;
 use File::Spec;
 use File::Temp;
 use Getopt::Long;
+use Sys::Hostname;
 
 # use Getopt::Std;
 use strict;
+
+my $pdftk = '';
+my $pdftotext = '';
+
+if( hostname() eq 'linode02'){
+    $pdftotext = '/usr/bin/pdftotext';                                                                                                                                      
+    $pdftk     = '/snap/bin/pdftk';  
+} else {
+    $pdftotext = '/opt/local/bin/pdftotext';                                                                                                                                      
+    $pdftk     = '/opt/local/bin/pdftk';        
+}
 
 my $verbose        = "";
 my $airport_charts = 1;    # include airport and taxi charts by default
