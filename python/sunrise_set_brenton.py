@@ -3,14 +3,14 @@
 
 #loc = "ON"
 #loc = "NS"
-loc = "WA"
+loc = "NS"
 import ephem as E
 gr=E.Observer()
 gr.lat, gr.long = '43.962526','-66.061365'
 gr.elevation = 20
 sun = E.Sun()
   
-gr.date = E.Date('2015/11/30')
+gr.date = E.Date('2019/01/01')
 print "Brenton Sunrise and Sunset Times\n"
 print "   Date      SunRise    SunSet     HrsUp   Change"
 upp = 0.
