@@ -5,9 +5,13 @@
 #
 # on MBPr:
 #  mkdir pad; for f in *; aspectpad.sh $f pad/$f
+#  moved padded images to ~/temp/BS/
 #
 # on Mac Mini: 
 #  mkdir pad; for f in *; aspectpad.sh -a 1.778 $f pad/$f
+#  moved padded images to ~/temp/BS/
+#
+# after padding images for both iMac
 # ------------------------------------------------------------------------------
 # Developed by Fred Weinhaus 12/1/2009 .......... revised 11/2/2016
 #
