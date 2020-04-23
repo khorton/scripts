@@ -1,16 +1,16 @@
+
 #! /opt/local/bin/python2.7
-# print 6621 Rd E.2 NE, Moses Lake SunRise and SunSet times
+# print La Jolla, CA SunRise and SunSet times
 
 import ephem as E
 gr=E.Observer()
-# gr.lat, gr.long = '47.185188','-119.382082' # Home
-gr.lat, gr.long = '47.2085833','-119.3191389' # KMWH location
-gr.elevation = 362 # KMWH elevation
+gr.lat, gr.long = '32.850328','-117.272712' # La Jolla, CA location
+gr.elevation = 10 # La jolla elevation
 sun = E.Sun()
   
-gr.date = E.Date('2019/11/01')
+gr.date = E.Date('2019/06/10')
 # print "6621 Road E.2 NE Sunrise and Sunset Times\n"
-print "KMWH Sunrise and Sunset Times\n"
+print "La Jolla Sunrise and Sunset Times\n"
 print "   Date      SunRise    SunSet     HrsUp   Change"
 upp = 0.
 for n in range(415):
