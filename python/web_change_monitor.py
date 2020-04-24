@@ -1,7 +1,9 @@
 #! /opt/local/bin/python3.7
 
-patterns = ['April 23, 2020 6:30']
+patterns = ['April 23, 2020 7:30']
 app = '/Users/kwh/sw_projects/git/scripts/Automater/Chase_PPP_Page_Update.app'
+email_sent_flag = "/Users/kwh/temp/Chase_Page_Update_Email_Sent"
+
 # noapp = '/Users/kwh/temp/Chase_PPP_Page_NoUpdate.app'
 
 # Import requests (to download the page)
@@ -16,6 +18,8 @@ import time
 import subprocess
 
 import re
+from pathlib import Path
+
 # set the url as VentureBeat,
 url = "https://www.chase.com/cares"
 
@@ -31,16 +35,19 @@ updated_time=soup.find_all(string=re.compile("Updated"))
 result = str(updated_time)
 
 for pattern in patterns:
-    print('Looking for "%s" in "%s" ->' % (pattern, result), end=' ')
+	print('Looking for "%s" in "%s" ->' % (pattern, result), end=' ')
 
-    if re.search(pattern,  result):
-        print('No page update')
-#         subprocess.call(
-# 		    ["/usr/bin/open", "-W", "-n", "-a", noapp]
-#     		)
-    else:
-        print('Page updated!!')
-        subprocess.call(
-		    ["/usr/bin/open", "-W", "-n", "-a", app]
-    		)
+	if re.search(pattern,  result):
+		print('No page update')
+	else:
+		print('Page updated!!')
+		my_file = Path(email_sent_flag)
+		if my_file.is_file():
+			print('Page updated, but flag present!!')
+		else:
+			Path(email_sent_flag).touch()
+			subprocess.call(
+				["/usr/bin/open", "-W", "-n", "-a", app]
+				)
+
 
