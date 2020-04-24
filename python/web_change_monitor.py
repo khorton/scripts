@@ -33,7 +33,7 @@ updated_time=soup.find_all(string=re.compile("Updated"))
 result = str(updated_time)
 
 for pattern in patterns:
-	print('Looking for "%s" in "%s" ->' % (pattern, result), end=' ')
+	# print('Looking for "%s" in "%s" ->' % (pattern, result), end=' ')
 
 	if re.search(pattern,  result):
 		print(date_time_string, 'No page update')
