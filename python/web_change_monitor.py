@@ -1,7 +1,7 @@
 #! /opt/local/bin/python3.7
 
 patterns = ['April 23, 2020 6:30']
-app = '/Users/kwh/temp/Chase_PPP_Page_Update.app'
+app = '/Users/kwh/sw_projects/git/scripts/Automater/Chase_PPP_Page_Update.app'
 # noapp = '/Users/kwh/temp/Chase_PPP_Page_NoUpdate.app'
 
 # Import requests (to download the page)
