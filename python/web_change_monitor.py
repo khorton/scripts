@@ -1,6 +1,6 @@
 #! /opt/local/bin/python3.7
 
-patterns = ['April 23, 2020 6:30']
+patterns = ['April 27, 2020 6:00']
 app = '/Users/kwh/sw_projects/git/scripts/Automater/Chase_PPP_Page_Update.app'
 email_sent_flag = "/Users/kwh/temp/Chase_Page_Update_Email_Sent"
 
