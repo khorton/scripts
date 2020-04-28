@@ -38,11 +38,11 @@ for pattern in patterns:
 	if re.search(pattern,  result):
 		print(date_time_string, 'No page update')
 	else:
-		print('Page updated!!')
 		my_file = Path(email_sent_flag)
 		if my_file.is_file():
-			print(date_time_string, 'Page updated, but flag present!!')
+			print(date_time_string, 'Page updated, but flag present')
 		else:
+			print(date_time_string, 'Page updated!!')
 			Path(email_sent_flag).touch()
 			subprocess.call(
 				["/usr/bin/open", "-W", "-n", "-a", app]
