@@ -1,1 +1,3 @@
 /opt/local/var/macports/distfiles
+~/Downloads
+~/temp
