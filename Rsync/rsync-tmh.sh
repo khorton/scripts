@@ -1,9 +1,6 @@
 #!/bin/bash
 
-
-
-# Usage: sudo ./rsync-iMac.sh 03   
-
+# Usage: sudo ./rsync-MBP.sh 03   
 
 # logging notes at: https://stackoverflow.com/questions/4493525/rsync-what-means-the-f-on-rsync-logs
 # and https://serverfault.com/questions/346356/how-to-add-timestamp-and-file-list-to-rsync-log
@@ -22,8 +19,8 @@ echo "Start at" `date` >> $LOG
 echo "—————————————————————————" >> $LOG
 
 #rsync -aHSX -vvv --delete-before --progress --stats --itemize-changes --exclude-from '/root/rsync_exclude-list.txt' --out-format="%t %f %b" --delete-excluded /mnt/iocage/ /mnt/$1/iocage/ | tee -a $LOG
-rsync -aHSx -v --delete-before --progress --stats --itemize-changes --exclude-from '/Users/kwh/sw_projects/git/scripts/Rsync/rsync_exclude-list.txt' --out-format="%t %f %b" --delete-excluded /Users/kwh/ /Volumes/iMac_$1/kwh/ | tee -a $LOG
-rsync -aHSx -v --delete-before --progress --stats --itemize-changes --exclude-from '/Users/kwh/sw_projects/git/scripts/Rsync/rsync_exclude-list.txt' --out-format="%t %f %b" --delete-excluded /opt/ /Volumes/iMac_$1/opt/ | tee -a $LOG
+rsync -aHSx -v --delete-before --progress --stats --itemize-changes --exclude-from '/Users/tmh/sw_projects/git/scripts/Rsync/rsync_exclude-list.txt' --out-format="%t %f %b" --delete-excluded /Users/tmh/ /Volumes/KWH_$1/tmh/ | tee -a $LOG
+#rsync -aHSx -v --delete-before --progress --stats --itemize-changes --exclude-from '/Users/tmh/sw_projects/git/scripts/Rsync/rsync_exclude-list.txt' --out-format="%t %f %b" --delete-excluded /opt/ /Volumes/KWH_$1/opt/ | tee -a $LOG
 
 echo "—————————————————————————" >> $LOG
 echo "End at" `date` >> $LOG

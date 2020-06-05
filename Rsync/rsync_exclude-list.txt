@@ -1,0 +1,5 @@
+/opt/local/var/macports/distfiles
+/Users/kwh/Downloads
+/Users/kwh/temp
+/Users/tmh/Downloads
+/Users/tmh/temp

@@ -1,9 +1,10 @@
 #!/bin/bash
 
-
-
+<<<<<<< HEAD
+# Usage: sudo rsync-iMac.sh 03
+=======
 # Usage: sudo ./rsync-iMac.sh 03   
-
+>>>>>>> 2fbd592e78290958f91f3aa87a76e0f872954e36
 
 # logging notes at: https://stackoverflow.com/questions/4493525/rsync-what-means-the-f-on-rsync-logs
 # and https://serverfault.com/questions/346356/how-to-add-timestamp-and-file-list-to-rsync-log
