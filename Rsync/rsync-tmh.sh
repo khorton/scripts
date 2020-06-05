@@ -19,7 +19,7 @@ echo "Start at" `date` >> $LOG
 echo "—————————————————————————" >> $LOG
 
 #rsync -aHSX -vvv --delete-before --progress --stats --itemize-changes --exclude-from '/root/rsync_exclude-list.txt' --out-format="%t %f %b" --delete-excluded /mnt/iocage/ /mnt/$1/iocage/ | tee -a $LOG
-rsync -aHSx -v --delete-before --progress --stats --itemize-changes --exclude-from '/Users/tmh/sw_projects/git/scripts/Rsync/rsync_exclude-list.txt' --out-format="%t %f %b" --delete-excluded /Users/tmh/ /Volumes/KWH_$1/tmh/ | tee -a $LOG
+rsync -aHSx -v --delete-before --progress --stats --itemize-changes --exclude-from '/Users/tmh/sw_projects/git/scripts/Rsync/rsync_exclude-list.txt' --out-format="%t %f %b" --delete-excluded /Users/tmh/ /Volumes/TMH_$1/tmh/ | tee -a $LOG
 #rsync -aHSx -v --delete-before --progress --stats --itemize-changes --exclude-from '/Users/tmh/sw_projects/git/scripts/Rsync/rsync_exclude-list.txt' --out-format="%t %f %b" --delete-excluded /opt/ /Volumes/KWH_$1/opt/ | tee -a $LOG
 
 echo "—————————————————————————" >> $LOG
