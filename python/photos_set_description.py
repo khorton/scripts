@@ -3,8 +3,8 @@
 
 #
 # USAGE INFORMATION:
-# This script copies all GPS data from one image file, and pastes it into
-# the selected files.
+# This script inserts IPTC:Caption-Abstract into photos, so that this info
+# shows up as the image Description in Apple Photos.
 ##
 # Assumptions: 
 #
