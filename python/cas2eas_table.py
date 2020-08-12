@@ -5,7 +5,7 @@ import airspeed as A
 alts=range(39000,-1,-1000)
 CASs=range(100,381,10)
 
-print " EAS |                                                                         CAS"
+print " EAS |                                                                                     CAS                                                                                     |"
 print " hp  |",
 for CAS in CASs:
     print " %i|" % (CAS),

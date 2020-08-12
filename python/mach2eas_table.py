@@ -5,7 +5,7 @@ import airspeed as A
 alts=range(39000,-1,-1000)
 Ms=range(30, 79, 2) + [79] + [80, 82, 84, 85]
 
-print "Mach |                                                                         EAS"
+print " EAS |                                                                                        Mach                                                                                       |"
 print " hp  |",
 for M in Ms:
     print "%0.2f|" % (M / 100.),
