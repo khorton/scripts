@@ -8,12 +8,12 @@ ml.lat, ml.long = '47.185188','-119.382082'
 ml.elevation = 362 # KMWH elevation
 sun = E.Sun()
   
-ml.date = E.Date('2019/11/01')
+ml.date = E.Date('2020/11/01')
 print("6621 Road E.2 NE Sunrise and Sunset Times\n")
 # print "KMWH Sunrise and Sunset Times\n"
 print("   Date      SunRise    SunSet     HrsUp   Change")
 upp = 0.
-for n in range(415):
+for n in range(435):
   dr = ml.next_rising(sun)
 #  azr = ml.sun.rise_az
   ds = ml.next_setting(sun)
