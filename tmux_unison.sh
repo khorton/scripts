@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 SESSION_NAME="unison"
 WINDOW_NAME="unison_notes"
