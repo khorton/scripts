@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import sys, os, random, fnmatch
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
-from PySide2.QtGui import QPixmap
+from qtpy.QtCore import Qt
+from qtpy.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
+from qtpy.QtGui import QPixmap
 from slideShow_UI import *
 
 #######################################################################################################################
