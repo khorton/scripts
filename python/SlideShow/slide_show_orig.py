@@ -1,4 +1,4 @@
-#! /sw/bin/python2.5
+#! /opt/local/bin/python2.7
 
 # MAX_SIZE = (1024, 768)
 from Tkinter import *
