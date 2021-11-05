@@ -1,4 +1,4 @@
-#! /sw/bin/python2.7
+#! /usr/bin/env python
 # -*- coding: latin-1 -*-
 
 import argparse
@@ -35,6 +35,6 @@ if args.latlong:
 	# print "long=%s %s" % (long, EW)
 
 	command = "exiftool −overwrite_original_in_place -P -GPSMapDatum=WGS-84 -gps:GPSLatitude=%s -gps:GPSLatitudeRef=%s -gps:GPSLongitude=%s -gps:GPSLongitudeRef=%s -xmp:GPSLatitude='%s %s' -xmp:GPSLongitude='%s %s' -xmp:GPSMapDatum='WGS-84' -xmp:GPSVersionID='2.2.0.0' %s" % (lat, NS, long, EW, lat, NS, long, EW, " ".join(args.JPGs))
-	print command
+	print(command)
 else:
-	print "latLong not defined"
+	print("latLong not defined")

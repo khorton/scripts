@@ -21,7 +21,7 @@ If no files are added, the script will output the exiftool command.  Copy this
 output and manually add the files arquement."""
 
 if len(sys.argv) < 3:
-    print usage
+    print(usage)
     exit()
 
 
@@ -69,12 +69,12 @@ c7 = "' -xmp:GPSMapDatum='WGS-84' -xmp:GPSVersionID='2.2.0.0'"
 command = "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s" % (c1, lat, c2, latNS, c3, longg, c4, longEW, c5, lat, latNS, c6, longg, longEW, c7)
 
 if files:
-    print "found files"
-    print files
+    print("found files")
+    print(files)
     os.execv(command, files)
 else:
     command2 = "%s *.(jpg|JPG|arw|ARW)" % command
-    print command2
+    print(command2)
     
     
 
