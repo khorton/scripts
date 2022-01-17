@@ -6,6 +6,7 @@ from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
 from qtpy.QtGui import QPixmap
 from slideShow_UI import *
+from platform import node
 
 #######################################################################################################################
 #                                                                                                                     #
@@ -281,6 +282,10 @@ if __name__ == "__main__":
     pix_ratio = screen.devicePixelRatio()
     currentPath = os.getcwd()
     
-    myapp = MyForm(size.width(), size.height(), pix_ratio, currentPath)
+    if node() == 'MacBook-Pro.local':
+	    myapp = MyForm(size.width(), size.height()-32, pix_ratio, currentPath)
+    else:
+	    myapp = MyForm(size.width(), size.height(), pix_ratio, currentPath)
+
     myapp.show()
     sys.exit(app.exec_())
