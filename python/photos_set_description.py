@@ -1,4 +1,4 @@
-#!/opt/local/bin/python2.7
+#!/opt/local/bin/python3
 #-*- coding: utf-8 -*-
 
 #
@@ -14,7 +14,7 @@
 #   exiftool
 #
 
-from __future__ import print_function
+# from __future__ import print_function
 import Pashua
 import os.path
 import os
@@ -22,7 +22,7 @@ import sys
 import subprocess
 
 
-conf = """
+conf = u"""
 # Set window title
 *.title = Set Description in EXIF
 
@@ -100,7 +100,7 @@ automatically added to each window, if not included in the configuration)
 #                img.path = %s""" % icon
 #
 
-result = Pashua.run(conf)
+result = Pashua.run(conf.encode('utf8'))
 
 # print("Pashua returned the following dictionary keys and values:")
 
