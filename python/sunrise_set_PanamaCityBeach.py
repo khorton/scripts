@@ -7,9 +7,9 @@ gr.lat, gr.long = '30.192074078937303','-85.8333012142471'
 gr.elevation = 5
 sun = E.Sun()
   
-gr.date = E.Date('2015/01/01')
-print "Springhill Suites Panama City Beach Sunrise and Sunset Times\n"
-print "   Date      SunRise    SunSet     HrsUp   Change"
+gr.date = E.Date('2023/01/01')
+print("Springhill Suites Panama City Beach Sunrise and Sunset Times\n")
+print("   Date      SunRise    SunSet     HrsUp   Change")
 upp = 0.
 for n in range(365):
   dr = gr.next_rising(sun)
@@ -38,6 +38,6 @@ for n in range(365):
   chge_text = '{:1d}:{:02d}'.format(cm, cs)
   rise_text = E.localtime(dr).strftime('%d %b %Y  %H:%M:%S')
   set_text = E.localtime(ds).strftime('%H:%M:%S')
-  print "%s  %s  %s  %s%s" % (rise_text, set_text, up_text, sign, chge_text)
+  print("%s  %s  %s  %s%s" % (rise_text, set_text, up_text, sign, chge_text))
   # print E.localtime(dr).strftime('%d %b %Y %H:%M:%S'), E.localtime(ds).strftime('%H:%M:%S')
   gr.date += 1
