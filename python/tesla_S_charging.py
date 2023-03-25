@@ -87,21 +87,69 @@ def charge_matrix(charger_max_rate=250,ramp_time=30, battery_max_capacity=98, ou
 	battery_max_capacity defaults to 98 kWh
 	output must be either "md" or "latex".  Defaults to "md"
 	"""
-# 	print("|           |  2022 Tesla Model S   -   {:3,.0f} kW     -      Starting SOC                   |".format(charger_max_rate))
-	print("| Final SOC |  5%  |  10% |  20% |  30% |  40% |  50% |  60% |  70% |  80% |  90% |  95% |")
-	print("|-----------|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|")
-	
 	SOC_starts = [.05, .1, .2, .3, .4, .5, .6, .7, .8, .9, .95]
 	SOC_ends = [.3, .4, .5, .55, .6, .65,  .7, .75, .8, .85, .9, .95, 1]
-	for SOC_end in SOC_ends:
-		line_out = "| {:6,.0f}%   |".format(SOC_end * 100)
-		for SOC_start in SOC_starts:
-			if SOC_start >= SOC_end:
-				next
-			duration = charge_time(SOC_start, SOC_end, charger_max_rate=charger_max_rate, ramp_time=ramp_time, battery_max_capacity=battery_max_capacity)
-			if SOC_start >= SOC_end:
-				line_out += "      |"
-			else:
-				line_out += "{:5,.1f} |".format(duration)
-		print(line_out)
-	print("*[2022 Tesla Model S Charge Time vs Start and Final SOC - {:3,.0f} kW Charger]*".format(charger_max_rate))
+
+	if output == 'md':
+		print("| Final SOC |  5%  |  10% |  20% |  30% |  40% |  50% |  60% |  70% |  80% |  90% |  95% |")
+		print("|-----------|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|")
+	
+		for SOC_end in SOC_ends:
+			line_out = "| {:6,.0f}%   |".format(SOC_end * 100)
+			for SOC_start in SOC_starts:
+				if SOC_start >= SOC_end:
+					next
+				duration = charge_time(SOC_start, SOC_end, charger_max_rate=charger_max_rate, ramp_time=ramp_time, battery_max_capacity=battery_max_capacity)
+				if SOC_start >= SOC_end:
+					line_out += "      |"
+				else:
+					line_out += "{:5,.0f} |".format(duration)
+			print(line_out)
+		print("*[2022 Tesla Model S Charge Time vs Start and Final SOC - {:3,.0f} kW Charger]*".format(charger_max_rate))
+	elif output == 'latex':
+		preamble = r"""% !TEX TS-program = pdftex
+% !TEX encoding = UTF-8 Unicode
+
+
+\documentclass[11pt,letterpaper,english]{article}
+\usepackage{tabulary}
+\begin{document}"""
+
+		table_start = r"""\begin{table}[htbp]
+		\begin{minipage}{\linewidth}
+		\setlength{\tymax}{0.5\linewidth}
+		\centering
+		\small
+		\begin{tabulary}{\textwidth}{|C|C|C|C|C|C|C|C|C|C|C|C|} 
+		\hline
+		\multicolumn{12}{|c|}{ 2022 Tesla Model S Charging Time (minutes) --"""
+		table_start2 = "{:2,.0f} kW Charger".format(charger_max_rate)
+		table_start3 = r"""}\\
+		\hline
+		 Final &\multicolumn{11}{c|}{ Starting SOC }\\
+		\cline{2-12}
+		 SOC & 5\% & 10\% & 20\% & 30\% & 40\% & 50\% & 60\% & 70\% & 80\% & 90\% & 95\% \\
+		\hline"""
+		print(preamble)
+		print(table_start, table_start2, table_start3)
+
+		for SOC_end in SOC_ends:
+			line_out = "{:3,.0f}\% ".format(SOC_end * 100)
+			for SOC_start in SOC_starts:
+				if SOC_start >= SOC_end:
+					next
+				duration = charge_time(SOC_start, SOC_end, charger_max_rate=charger_max_rate, ramp_time=ramp_time, battery_max_capacity=battery_max_capacity)
+				if SOC_start >= SOC_end:
+					line_out += "&      "
+				else:
+					line_out += "& {:5,.0f} ".format(duration)
+			line_out += r' \\'
+			print(line_out)
+		table_end = r"""\hline
+\end{tabulary}
+\end{minipage}
+\end{table}
+\end{document}
+
+"""
+		print(table_end)
