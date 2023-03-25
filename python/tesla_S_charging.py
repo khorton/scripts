@@ -79,7 +79,7 @@ def charge_time(SOC_start, SOC_end, charger_max_rate=250, ramp_time=30, battery_
 	
 	return duration / 60
 
-def charge_matrix(charger_max_rate=250,ramp_time=30, battery_max_capacity=98, output='md'):
+def charge_matrix(charger_max_rate=250,ramp_time=30, battery_max_capacity=98):
 	"""
 	Print matrix of charge times
 	charger_max_rate defaults to 250 kW and
@@ -87,36 +87,54 @@ def charge_matrix(charger_max_rate=250,ramp_time=30, battery_max_capacity=98, ou
 	battery_max_capacity defaults to 98 kWh
 	output must be either "md" or "latex".  Defaults to "md"
 	"""
-	SOC_starts = [.05, .1, .2, .3, .4, .5, .6, .7, .8, .9, .95]
-	SOC_ends = [.3, .4, .5, .55, .6, .65,  .7, .75, .8, .85, .9, .95, 1]
+	SOC_starts = [.05, .1, .15, .2, .3, .4, .5, .6, .7, .8, .9]
+	SOC_ends = [.4, .5, .55, .6, .65,  .7, .75, .8, .85, .9, .95, 1]
 
-	if output == 'md':
-		print("| Final SOC |  5%  |  10% |  20% |  30% |  40% |  50% |  60% |  70% |  80% |  90% |  95% |")
-		print("|-----------|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|")
-	
-		for SOC_end in SOC_ends:
-			line_out = "| {:6,.0f}%   |".format(SOC_end * 100)
-			for SOC_start in SOC_starts:
-				if SOC_start >= SOC_end:
-					next
-				duration = charge_time(SOC_start, SOC_end, charger_max_rate=charger_max_rate, ramp_time=ramp_time, battery_max_capacity=battery_max_capacity)
-				if SOC_start >= SOC_end:
-					line_out += "      |"
-				else:
-					line_out += "{:5,.0f} |".format(duration)
-			print(line_out)
-		print("*[2022 Tesla Model S Charge Time vs Start and Final SOC - {:3,.0f} kW Charger]*".format(charger_max_rate))
-	elif output == 'latex':
-		preamble = r"""% !TEX TS-program = pdftex
+	print("| Final SOC |  5%  |  10% |  15% |  20% |  30% |  40% |  50% |  60% |  70% |  80% |  90% |")
+	print("|-----------|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|")
+
+	for SOC_end in SOC_ends:
+		line_out = "| {:6,.0f}%   |".format(SOC_end * 100)
+		for SOC_start in SOC_starts:
+			if SOC_start >= SOC_end:
+				next
+			duration = charge_time(SOC_start, SOC_end, charger_max_rate=charger_max_rate, ramp_time=ramp_time, battery_max_capacity=battery_max_capacity)
+			if SOC_start >= SOC_end:
+				line_out += "      |"
+			else:
+				line_out += "{:5,.0f} |".format(duration)
+		print(line_out)
+	print("*[2022 Tesla Model S Charge Time vs Start and Final SOC - {:3,.0f} kW Charger]*".format(charger_max_rate))
+		
+def charge_matrix_latex(charger_max_rates=[250],ramp_time=30, battery_max_capacity=98):
+	"""
+	Print matrix of charge times
+	charger_max_rate defaults to 250 kW and
+	ramp_time defaults to 60s to ramp from 0 to initial charge rate
+	battery_max_capacity defaults to 98 kWh
+	output must be either "md" or "latex".  Defaults to "md"
+	"""
+	SOC_starts = [.05, .1, .15, .2, .3, .4, .5, .6, .7, .8, .9, ]
+# 	SOC_ends = [.3, .4, .5, .55, .6, .65,  .7, .75, .8, .85, .9, .95, 1]
+	SOC_ends = [.4, .5, .55, .6, .65,  .7, .75, .8, .85, .9, .95, 1]
+
+	preamble = r"""% !TEX TS-program = pdftex
 % !TEX encoding = UTF-8 Unicode
 
 
 \documentclass[11pt,letterpaper,english]{article}
 \usepackage{tabulary}
+\usepackage[text={7in,10in},centering]{geometry}
 \begin{document}"""
 
-		table_start = r"""\begin{table}[htbp]
-		\begin{minipage}{\linewidth}
+	print(preamble)
+
+	for n, charger_max_rate in enumerate(charger_max_rates):
+
+		if n >= 1:
+			print(r'\vspace{0.5 in}')
+
+		table_start = r"""
 		\setlength{\tymax}{0.5\linewidth}
 		\centering
 		\small
@@ -128,10 +146,13 @@ def charge_matrix(charger_max_rate=250,ramp_time=30, battery_max_capacity=98, ou
 		\hline
 		 Final &\multicolumn{11}{c|}{ Starting SOC }\\
 		\cline{2-12}
-		 SOC & 5\% & 10\% & 20\% & 30\% & 40\% & 50\% & 60\% & 70\% & 80\% & 90\% & 95\% \\
+		 SOC """
+		for SOC_start in SOC_starts:
+			table_start3 += '& {:3,.0f}\% '.format(SOC_start * 100)
+		
+		table_start4 = r"""\\
 		\hline"""
-		print(preamble)
-		print(table_start, table_start2, table_start3)
+		print(table_start, table_start2, table_start3, table_start4)
 
 		for SOC_end in SOC_ends:
 			line_out = "{:3,.0f}\% ".format(SOC_end * 100)
@@ -140,16 +161,15 @@ def charge_matrix(charger_max_rate=250,ramp_time=30, battery_max_capacity=98, ou
 					next
 				duration = charge_time(SOC_start, SOC_end, charger_max_rate=charger_max_rate, ramp_time=ramp_time, battery_max_capacity=battery_max_capacity)
 				if SOC_start >= SOC_end:
-					line_out += "&      "
+					line_out += "&       "
 				else:
 					line_out += "& {:5,.0f} ".format(duration)
 			line_out += r' \\'
 			print(line_out)
-		table_end = r"""\hline
-\end{tabulary}
-\end{minipage}
-\end{table}
-\end{document}
-
-"""
+			print(r'\hline')
+		table_end = r"""
+	\end{tabulary}
+	"""
 		print(table_end)
+
+	print(r'\end{document}')
