@@ -114,7 +114,7 @@ def charge_matrix_latex(charger_max_rates=[250],ramp_time=30, battery_max_capaci
 	battery_max_capacity defaults to 98 kWh
 	output must be either "md" or "latex".  Defaults to "md"
 	"""
-	SOC_starts = [.05, .1, .15, .2, .3, .4, .5, .6, .7, .8, .9, ]
+	SOC_starts = [.05, .1, .15, .2, .3, .4, .5, .6, .7, .8, .9 ]
 # 	SOC_ends = [.3, .4, .5, .55, .6, .65,  .7, .75, .8, .85, .9, .95, 1]
 	SOC_ends = [.4, .5, .55, .6, .65,  .7, .75, .8, .85, .9, .95, 1]
 
@@ -122,10 +122,14 @@ def charge_matrix_latex(charger_max_rates=[250],ramp_time=30, battery_max_capaci
 % !TEX encoding = UTF-8 Unicode
 
 
-\documentclass[11pt,letterpaper,english]{article}
+\documentclass[11pt,letterpaper]{article}
 \usepackage{tabulary}
 \usepackage[text={7in,10in},centering]{geometry}
-\begin{document}"""
+\begin{document}
+\setlength{\tymax}{0.75\linewidth}
+\centering
+\small
+"""
 
 	print(preamble)
 
@@ -135,23 +139,20 @@ def charge_matrix_latex(charger_max_rates=[250],ramp_time=30, battery_max_capaci
 			print(r'\vspace{0.5 in}')
 
 		table_start = r"""
-		\setlength{\tymax}{0.5\linewidth}
-		\centering
-		\small
-		\begin{tabulary}{\textwidth}{|C|C|C|C|C|C|C|C|C|C|C|C|} 
-		\hline
-		\multicolumn{12}{|c|}{ 2022 Tesla Model S Charging Time (minutes) --"""
+\begin{tabulary}{\textwidth}{|C|C|C|C|C|C|C|C|C|C|C|C|} 
+\hline
+\multicolumn{12}{|c|}{ 2022 Tesla Model S Charging Time (minutes) --"""
 		table_start2 = "{:2,.0f} kW Charger".format(charger_max_rate)
 		table_start3 = r"""}\\
-		\hline
-		 Final &\multicolumn{11}{c|}{ Starting SOC }\\
-		\cline{2-12}
-		 SOC """
+\hline
+ Final &\multicolumn{11}{c|}{ Starting SOC }\\
+\cline{2-12}
+ SOC """
 		for SOC_start in SOC_starts:
 			table_start3 += '& {:3,.0f}\% '.format(SOC_start * 100)
 		
 		table_start4 = r"""\\
-		\hline"""
+\hline"""
 		print(table_start, table_start2, table_start3, table_start4)
 
 		for SOC_end in SOC_ends:
@@ -168,8 +169,28 @@ def charge_matrix_latex(charger_max_rates=[250],ramp_time=30, battery_max_capaci
 			print(line_out)
 			print(r'\hline')
 		table_end = r"""
-	\end{tabulary}
+\end{tabulary}
 	"""
 		print(table_end)
 
+	doc_end = r"""
+\vspace{0.5in}
+\begin{minipage}{0.8\textwidth}
+\raggedright
+\vfill
+Assumptions:\\
+Battery preconditioned to optimum temperature.\\
+Fully serviceable charging station with no power sharing between stations.\\
+	"""
+	doc_end += r'{:3,.0f}kWh battery capacity.'.format(battery_max_capacity)
+	doc_end2 = r"""
+\end{minipage}
+\hfill
+\begin{minipage}{0.15\textwidth}
+\raggedleft
+\vfill
+ \today
+\end{minipage}
+"""
+	print(doc_end,doc_end2)
 	print(r'\end{document}')
