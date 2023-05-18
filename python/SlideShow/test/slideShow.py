@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import sys, os, random, fnmatch
-from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
-from qtpy.QtGui import QPixmap
+# from qtpy.QtCore import Qt
+# from qtpy.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
+# from qtpy.QtGui import QPixmap
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
+from PyQt5.QtGui import QPixmap
 from slideShow_UI import *
 from platform import node
 
@@ -187,6 +190,20 @@ class MyForm(QMainWindow):
             os.rename(path1, path3)
         except FileNotFoundError:
             path2 = os.path.join(os.getcwd(), "extend", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def faux(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../faux", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "faux", name1)
             print('exception loop', path2)
             os.rename(path1, path2)
 
@@ -462,6 +479,8 @@ class MyForm(QMainWindow):
             self.publicc(self.slideIndex)
         if e.key() == Qt.Key_L:
             self.pussy(self.slideIndex)
+        if e.key() == Qt.Key_Z:
+            self.faux(self.slideIndex)
         if e.key() == Qt.Key_U:
             self.suck(self.slideIndex)
         if e.key() == Qt.Key_Y:
