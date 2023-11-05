@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import sys, os, random, fnmatch
-from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
-from qtpy.QtGui import QPixmap
+# from qtpy.QtCore import Qt
+# from qtpy.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
+# from qtpy.QtGui import QPixmap
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog, QApplication, QGraphicsScene, QGraphicsPixmapItem, QMainWindow, QFileDialog
+from PyQt5.QtGui import QPixmap
 from slideShow_UI import *
 from platform import node
 
@@ -19,7 +22,22 @@ from platform import node
 #  2. Figure out how to centre images in display
 #                                                                                                                     
 #                                                                                                                     
-#                                                                                                                     
+#  KEY BINDINGS
+# 
+# ESC:         Quit
+# Q:           Q
+# D:           Open Directory Dialog
+# R:           Start Random slideShow
+# Space:       Next Random Slide
+# N    :       Next Random Slide
+# Left Click:  Next Random Slide
+# Right Click: Previous Random Slide
+# P          : Previous Random Slide
+# >:           Next Alphabetical Slide                                                                                                                  
+# <:           Previous Alphabetical Slide
+# 
+# I:           Move to Girl Friend folder
+#                                                                                                                  
 #######################################################################################################################
 
 class MyForm(QMainWindow):
@@ -87,7 +105,10 @@ class MyForm(QMainWindow):
             return [], self.path
 
         for i in GlobDirectoryWalker(self.path, "*.*"):
+#         for i in GlobDirectoryWalker(self.path):
             if os.path.isfile(i):
+#                 print(os.path.dirname(i), self.path)
+#                 if os.path.dirname(i) + '/  ' == self.path:
                 if self.checkImageType(i): self.imageFiles.append(i)
             
         max_index = len(self.imageFiles) - 1
@@ -104,7 +125,7 @@ class MyForm(QMainWindow):
         self.pixmap.load(self.imageFiles[i])
         self.pixmap.setDevicePixelRatio(self.pixel_ratio) # https://stackoverflow.com/questions/50127246/pyqt-5-10-enabling-high-dpi-support-for-macos-poor-pixmap-quality
         #self.pixmap4 = self.pixmap.scaled(self.width * self.pixel_ratio, (self.height * self.pixel_ratio)-45, Qt.KeepAspectRatio)
-        self.pixmap4 = self.pixmap.scaled(self.width * self.pixel_ratio, (self.height * self.pixel_ratio), Qt.KeepAspectRatio)
+        self.pixmap4 = self.pixmap.scaled(int(self.width * self.pixel_ratio), (int(self.height * self.pixel_ratio)), Qt.KeepAspectRatio)
         try:
             self.scene.removeItem(self.item)
         except:
@@ -112,9 +133,221 @@ class MyForm(QMainWindow):
         self.item = QGraphicsPixmapItem(self.pixmap4)
         self.scene.addItem(self.item)
         #myapp.setWindowTitle(os.path.basename(self.imageFiles[i]))
-        self.setWindowTitle(os.path.basename(self.imageFiles[i]))
+#         self.setWindowTitle(os.path.basename(self.imageFiles[i]))
+        self.setWindowTitle(self.imageFiles[i])
         self.ui.graphicsView.setScene(self.scene)
         
+    def girl_friend(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../gf", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "gf", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def publicc(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../public", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "public", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def suck(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../suck", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "suck", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def extendd(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../extend", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "extend", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def faux(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../faux", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "faux", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def pussy(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../pussy", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "pussy", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def masturbate(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../masturbate", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "masturbate", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def never(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../never", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "never", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def mat(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../mat", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "mat", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def year(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../year", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "year", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def edge(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../edge", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "edge", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def strapon(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../strapon", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "strapon", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def cuck(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../cuck", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "cuck", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+    def fav(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../fav", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "fav", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
+
+    def device(self, i):
+        path1 = self.imageFiles[i]
+        name1 = os.path.basename(self.imageFiles[i])
+        print(path1)
+        path2 = os.path.join(os.getcwd(), "../device", name1)
+        path3 = os.path.normpath(path2)
+        print('outer loop', path3)
+        try:
+            os.rename(path1, path3)
+        except FileNotFoundError:
+            path2 = os.path.join(os.getcwd(), "device", name1)
+            print('exception loop', path2)
+            os.rename(path1, path2)
+
     def slide_show(self):
         self.random = 0
         self.next_slide()
@@ -222,6 +455,36 @@ class MyForm(QMainWindow):
             self.helpWindow = self.helpWindow()
         if e.key() == Qt.Key_BracketLeft:
             self.slideIndex = self.decrement_slide()
+        if e.key() == Qt.Key_K:
+            self.cuck(self.slideIndex)
+        if e.key() == Qt.Key_I:
+            self.device(self.slideIndex)
+        if e.key() == Qt.Key_E:
+            self.edge(self.slideIndex)
+        if e.key() == Qt.Key_X:
+            self.extendd(self.slideIndex)
+        if e.key() == Qt.Key_F:
+            self.fav(self.slideIndex)
+        if e.key() == Qt.Key_G:
+            self.girl_friend(self.slideIndex)
+        if e.key() == Qt.Key_M:
+            self.masturbate(self.slideIndex)
+        if e.key() == Qt.Key_T:
+            self.mat(self.slideIndex)
+        if e.key() == Qt.Key_V:
+            self.never(self.slideIndex)
+        if e.key() == Qt.Key_O:
+            self.strapon(self.slideIndex)
+        if e.key() == Qt.Key_C:
+            self.publicc(self.slideIndex)
+        if e.key() == Qt.Key_L:
+            self.pussy(self.slideIndex)
+        if e.key() == Qt.Key_Z:
+            self.faux(self.slideIndex)
+        if e.key() == Qt.Key_U:
+            self.suck(self.slideIndex)
+        if e.key() == Qt.Key_Y:
+            self.year(self.slideIndex)
     
     def mousePressEvent(self, e):
         if e.button() == QtCore.Qt.LeftButton:
@@ -282,8 +545,8 @@ if __name__ == "__main__":
     pix_ratio = screen.devicePixelRatio()
     currentPath = os.getcwd()
     
-    if node() == 'MacBook-Pro.local':
-	    myapp = MyForm(size.width(), size.height()-32, pix_ratio, currentPath)
+    if node()[:11] == 'MacBook-Pro' or node()[:8] == 'MBP16-M1':
+	    myapp = MyForm(size.width(), size.height()-36, pix_ratio, currentPath)
     else:
 	    myapp = MyForm(size.width(), size.height(), pix_ratio, currentPath)
 

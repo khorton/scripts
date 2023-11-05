@@ -1,34 +1,19 @@
-#! /opt/local/bin/python3
-# print('2012 Explorers Trail SunRise and SunSet times')
+#! /opt/local/bin/python
+# print Springhill Suites Panama City Beach SunRise and SunSet times
 
 import ephem as E
-dp=E.Observer()
-
-loc = "WI"
-
-dp.lat, dp.long = '44.428220', '-87.982371'
-dp.elevation = 212 # KGRB elevation
+gr=E.Observer()
+gr.lat, gr.long = '30.192074078937303','-85.8333012142471'
+gr.elevation = 5
 sun = E.Sun()
   
-dp.date = E.Date('2023/11/01')
-
-print("2012 Explorers Trail Sunrise and Sunset Times\n")
+gr.date = E.Date('2023/01/01')
+print("Springhill Suites Panama City Beach Sunrise and Sunset Times\n")
 print("   Date      SunRise    SunSet     HrsUp   Change")
 upp = 0.
-
-for n in range(435):
-  if loc == "WI":
-    dr = dp.next_rising(sun)
-    ds = dp.next_setting(sun)
-#   elif loc == "ON":
-#     dr = E.Date(dp.next_rising(sun) + E.hour)
-#     ds = E.Date(dp.next_setting(sun) + E.hour)
-  elif loc == "WA":
-    dr = E.Date(dp.next_rising(sun) + 2 * E.hour)
-    ds = E.Date(dp.next_setting(sun) + 2 * E.hour)
-  else:
-    print("Unknown location")
-
+for n in range(365):
+  dr = gr.next_rising(sun)
+  ds = gr.next_setting(sun)
   up = (ds - dr)
   if up < 0:
     up += 1
@@ -52,8 +37,7 @@ for n in range(435):
   upp = up
   chge_text = '{:1d}:{:02d}'.format(cm, cs)
   rise_text = E.localtime(dr).strftime('%d %b %Y  %H:%M:%S')
-  # rise_az = 
   set_text = E.localtime(ds).strftime('%H:%M:%S')
   print("%s  %s  %s  %s%s" % (rise_text, set_text, up_text, sign, chge_text))
   # print E.localtime(dr).strftime('%d %b %Y %H:%M:%S'), E.localtime(ds).strftime('%H:%M:%S')
-  dp.date += 1
+  gr.date += 1
