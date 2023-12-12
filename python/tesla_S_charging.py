@@ -90,11 +90,11 @@ def charge_matrix(charger_max_rate=250,ramp_time=30, battery_max_capacity=98):
     SOC_starts = [.05, .1, .15, .2, .3, .4, .5, .6, .7, .8, .9]
     SOC_ends = [.4, .5, .55, .6, .65,  .7, .75, .8, .85, .9, .95, 1]
 
-    print("| Final SOC |  5%  |  10% |  15% |  20% |  30% |  40% |  50% |  60% |  70% |  80% |  90% |")
-    print("|-----------|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|")
+    print("| Starting SOC -> |  5%  |  10% |  15% |  20% |  30% |  40% |  50% |  60% |  70% |  80% |  90% |")
+    print("|----------------:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|")
 
     for SOC_end in SOC_ends:
-        line_out = "| {:6,.0f}%   |".format(SOC_end * 100)
+        line_out = "| {:4,.0f}% Final SOC |".format(SOC_end * 100)
         for SOC_start in SOC_starts:
             if SOC_start >= SOC_end:
                 next
