@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import random
-import sys
+import argparse
 
 test = [{"Q": '1. What is the supreme law of the land?', "A": ' ▪ the Constitution'}, 
         {"Q": '2. What does the Constitution do?', "A": ' ▪ sets up the government \n ▪ defines the government \n ▪ protects basic rights of Americans'},
@@ -105,9 +105,9 @@ test = [{"Q": '1. What is the supreme law of the land?', "A": ' ▪ the Constitu
         {"Q": '100. Name two national U.S. holidays.', "A": ' ▪ New Year’s Day \n ▪ Martin Luther King, Jr. Day \n ▪ Presidents’ Day \n ▪ Memorial Day \n ▪ Juneteenth \n ▪ Independence Day \n ▪ Labor Day \n ▪ Columbus Day \n ▪ Veterans Day \n ▪ Thanksgiving \n ▪ Christmas'},
 ]
 
-def do_test(n=100, Type = 'Random', Start = 1):
-    Start -= 1
-    if Type == 'Random':
+def do_test(n=100, order = 'Random', start = 1):
+    start -= 1
+    if order == 'Random':
         random_test = random.sample(test, n)
     else:
         random_test = test
@@ -116,13 +116,14 @@ def do_test(n=100, Type = 'Random', Start = 1):
 #         if a == 'q':
 #             sys.exit()
 #         if a == 
-    ques = Start
+    ques = start
     step = 0
     print('Press Return to run test.  Q to quit\n')
-    while(ques < n + Start):
+    while(ques < n + start):
         key = input('')
         if key == 'q' or key == 'Q':
-            sys.exit()
+#                 sys.exit()
+            return
         elif key =="":
             if step == 0:
                 print(random_test[ques]["Q"])
@@ -134,5 +135,14 @@ def do_test(n=100, Type = 'Random', Start = 1):
             
         else:
             pass
-        
 
+def main(n, order, start):
+    do_test(n, order, start)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Present US Citizenship Test and Answers, either in random order or sequentially',)
+    parser.add_argument('-n', '--number', default=100, help='Number of questions')
+    parser.add_argument('-o', '--order', default='Random', help='Type of test: Random or Sequential')
+    parser.add_argument('-s', '--start', default='1', help='Question number to start with')
+    args = parser.parse_args()
+    main(n=int(args.number), order=args.order, start=int(args.start))
