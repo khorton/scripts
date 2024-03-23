@@ -77,7 +77,7 @@ test = [{"Q": '1. What is the supreme law of the land?', "A": ' ▪ the Constitu
         {"Q": '72. Name one war fought by the United States in the 1800s.', "A": ' ▪ War of 1812 \n ▪ Mexican-American War \n ▪ Civil War \n ▪ Spanish-American War'},
         {"Q": '73. Name the U.S. war between the North and the South.', "A": ' ▪ the Civil War \n ▪ the War between the States'},
         {"Q": '74. Name one problem that led to the Civil War.', "A": ' ▪ slavery \n ▪ economic reasons \n ▪ states’ rights'},
-        {"Q": '75. What was one important thing that Abraham Lincoln did?', "A": ' ▪ freed the slaves (Emancipation Proclamation) \n ▪ saved (or preserved) the Union  ▪ led the United States during the Civil War'},
+        {"Q": '75. What was one important thing that Abraham Lincoln did?', "A": ' ▪ freed the slaves (Emancipation Proclamation) \n ▪ saved (or preserved) the Union \n ▪ led the United States during the Civil War'},
         {"Q": '76. What did the Emancipation Proclamation do?', "A": ' ▪ freed the slaves \n ▪ freed slaves in the Confederacy \n ▪ freed slaves in the Confederate states \n ▪ freed slaves in most Southern states'},
         {"Q": '77. What did Susan B. Anthony do?', "A": ' ▪ fought for women’s rights \n ▪ fought for civil rights'},
         {"Q": '78. Name one war fought by the United States in the 1900s.', "A": ' ▪ World War I \n ▪ World War II \n ▪ Korean War \n ▪ Vietnam War \n ▪ (Persian) Gulf War'},
