@@ -7,6 +7,10 @@ Calculate maximum possible solar array performance vs date
 from skyfield.api import N,S,E,W, wgs84, load
 from math import cos, sin, acos, pi
 import pandas as pd
+from datetime import datetime
+from pytz import timezone
+central = timezone('US/Central')
+import matplotlib.pyplot as plt
 
 ts = load.timescale()
 planets = load('de421.bsp')
@@ -24,12 +28,51 @@ array['rated watts per panel'] = 410
 array['rated watts per section'] = array['panels'] * array['rated watts per panel']
 
 
-def max_power(year, month, day, hour, minute, array):
+def plot_power_vs_time(df, title_text):
+	"""
+	Plot solar array max power vs time from start hour to end hour
+	"""
+	df.plot(x='hour',y='kW', grid='both', ylabel='Solar Array Power (kW)', legend=False, title=title_text)
+	plt.show()
+
+def power_vs_time(array, year, month, day, start_hour, end_hour, inc=.1, timezone='CENT'):
+	"""
+	Return Pandas Dataframe of solar array max power vs time from start hour to end hour
+	"""
+	hours = []
+	powers = []
+	hour = start_hour
+	while hour < end_hour:
+		hours.append(hour)
+		hour += inc
+	
+	for h in hours:
+		minute = int((h - int(h)) * 60)
+		powers.append(max_power(year, month, day, int(h), minute, array, timezone) / 1000)
+	
+	columns = ['hour', 'kW']
+	power = pd.DataFrame(columns=columns)
+	power['hour'] = hours
+	power['kW'] = powers
+	
+# 	print(power)
+
+	return power
+
+def max_power(year, month, day, hour, minute, array, timezone='CENT'):
 	"""
 	Return theoretical maximum solar array output in watts for a given date and UTC time
 	"""
+	d = datetime(year, month, day, hour, minute, 0)
+	if timezone == 'CENT':
+		dt = central.localize(d) # this accounts for Daylight Savings Time
+	else:
+		dt = d
+	
+	t = ts.from_datetime(dt)
+
 	hour += minute / 60
-	sun_astro = home.at(ts.utc(year, month, day, hour)).observe(sun)
+	sun_astro = home.at(t).observe(sun)
 	app = sun_astro.apparent()
 	sun_elevation, sun_azimuth, sun_distance = app.altaz()
 	if sun_elevation.radians < 0:
@@ -39,7 +82,7 @@ def max_power(year, month, day, hour, minute, array):
 		for index, row in array.iterrows():
 			section_incidence = incidence(sun_azimuth.radians, sun_elevation.radians, row['azimuth'], row['tilt'])
 			section_power = row['rated watts per section'] * incidence_correction(section_incidence)
-			print('Section Incidence:', section_incidence * 180/pi, 'Section Power:', section_power)
+# 			print('Section Incidence:', section_incidence * 180/pi, 'Section Power:', section_power)
 			array_power += section_power
 		return array_power
 
