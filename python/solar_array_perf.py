@@ -11,6 +11,7 @@ from datetime import datetime
 from pytz import timezone
 central = timezone('US/Central')
 import matplotlib.pyplot as plt
+# from scipy import integrate
 
 ts = load.timescale()
 planets = load('de421.bsp')
@@ -27,8 +28,7 @@ array['panels'] = [11, 19]
 array['rated watts per panel'] = 410
 array['rated watts per section'] = array['panels'] * array['rated watts per panel']
 
-
-def plot_power_vs_time(df, title_text):
+def plot_power_vs_time(df, title_text='Solar Array Power vs Time'):
 	"""
 	Plot solar array max power vs time from start hour to end hour
 	"""
@@ -54,8 +54,9 @@ def power_vs_time(array, year, month, day, start_hour, end_hour, inc=.1, timezon
 	power = pd.DataFrame(columns=columns)
 	power['hour'] = hours
 	power['kW'] = powers
+# 	power['integral'] = power.apply(lambda g: integrate.trapezoid(g['kW'], x=g['hour']))
 	
-# 	print(power)
+	print(power)
 
 	return power
 
