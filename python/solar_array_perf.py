@@ -63,7 +63,7 @@ def power_vs_time(array, year, month, day, start_hour, end_hour, inc=.1, timezon
 
 	return power
 
-def max_power(year, month, day, hour, minute, array, timezone='CENT'):
+def max_power(year, month, day, hour, minute, array, timezone='CENT', debug=False):
 	"""
 	Return theoretical maximum solar array output in watts for a given date and UTC time
 	"""
@@ -79,12 +79,16 @@ def max_power(year, month, day, hour, minute, array, timezone='CENT'):
 	sun_astro = home.at(t).observe(sun)
 	app = sun_astro.apparent()
 	sun_elevation, sun_azimuth, sun_distance = app.altaz()
+	if debug:
+		print("Sun Elevation=", sun_elevation, "\nSun Azimuth=", sun_azimuth)
 	if sun_elevation.radians < 0:
 		return 0
 	else:
 		array_power = 0
 		for index, row in array.iterrows():
 			section_incidence = incidence(sun_azimuth.radians, sun_elevation.radians, row['azimuth'], row['tilt'])
+			if debug:
+				print("Panel Incidence=", section_incidence * 180 / pi)
 			section_power = min(row['rated watts per section'] * incidence_correction(section_incidence), row['max watts per section'])
 # 			print('Section Incidence:', section_incidence * 180/pi, 'Section Power:', section_power)
 			array_power += section_power
