@@ -26,7 +26,10 @@ array['tilt'] = [33.7, 32]
 array['tilt'] *= pi / 180
 array['panels'] = [11, 19]
 array['rated watts per panel'] = 410
+array['max watts per panel'] = 349 # max continuous capacity of microinverters
 array['rated watts per section'] = array['panels'] * array['rated watts per panel']
+array['max watts per section'] = array['panels'] * array['max watts per panel']
+
 
 def plot_power_vs_time(df, title_text='Solar Array Power vs Time'):
 	"""
@@ -82,7 +85,7 @@ def max_power(year, month, day, hour, minute, array, timezone='CENT'):
 		array_power = 0
 		for index, row in array.iterrows():
 			section_incidence = incidence(sun_azimuth.radians, sun_elevation.radians, row['azimuth'], row['tilt'])
-			section_power = row['rated watts per section'] * incidence_correction(section_incidence)
+			section_power = min(row['rated watts per section'] * incidence_correction(section_incidence), row['max watts per section'])
 # 			print('Section Incidence:', section_incidence * 180/pi, 'Section Power:', section_power)
 			array_power += section_power
 		return array_power
