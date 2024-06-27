@@ -22,7 +22,7 @@ home = earth + wgs84.latlon(44.428220 * N, 87.98237 * W, elevation_m=212) # KGRB
 array = pd.DataFrame()
 array['azimuth'] = [140, 230]
 array['azimuth'] *= pi / 180
-array['tilt'] = [33.7, 32]
+array['tilt'] = [90 - 33.7, 90 - 32]
 array['tilt'] *= pi / 180
 array['panels'] = [11, 19]
 array['rated watts per panel'] = 410
@@ -88,7 +88,7 @@ def max_power(year, month, day, hour, minute, array, timezone='CENT', debug=Fals
 		for index, row in array.iterrows():
 			section_incidence = incidence(sun_azimuth.radians, sun_elevation.radians, row['azimuth'], row['tilt'])
 			if debug:
-				print("Panel Incidence=", section_incidence * 180 / pi)
+				print("Panel Incidence=", section_incidence * 180 / pi, "degrees")
 			section_power = min(row['rated watts per section'] * incidence_correction(section_incidence), row['max watts per section'])
 # 			print('Section Incidence:', section_incidence * 180/pi, 'Section Power:', section_power)
 			array_power += section_power
