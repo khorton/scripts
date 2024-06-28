@@ -63,7 +63,7 @@ def power_vs_time(array, year, month, day, start_hour, end_hour, inc=.1, timezon
 
 	return power
 
-def max_power(year, month, day, hour, minute, array, timezone='CENT', debug=False):
+def max_power(year, month, day, hour, minute, array, attenuation = 0.09, timezone='CENT', debug=False):
 	"""
 	Return theoretical maximum solar array output in watts for a given date and UTC time
 	"""
@@ -87,14 +87,20 @@ def max_power(year, month, day, hour, minute, array, timezone='CENT', debug=Fals
 		array_power = 0
 		for index, row in array.iterrows():
 			section_incidence = incidence(sun_azimuth.radians, sun_elevation.radians, row['azimuth'], row['tilt'])
+			section_power = min(row['rated watts per section'] * incidence_correction(section_incidence) * (1 - attenuation), row['max watts per section'])
 			if debug:
 				print("Panel Incidence=", section_incidence * 180 / pi, "degrees")
-			section_power = min(row['rated watts per section'] * incidence_correction(section_incidence), row['max watts per section'])
-# 			print('Section Incidence:', section_incidence * 180/pi, 'Section Power:', section_power)
+				print('Section Power:', section_power)
 			array_power += section_power
 		return array_power
 
-	
+
+def power(year, month, day, hour, minute, array, attenuation=0.09, timezone='CENT', debug=False):
+	"""
+	Return predicted solar array output in watts for a given date and UTC time, accounting for solar attenuation
+	"""	
+	return max_power(year, month, day, hour, minute, array, timezone, attenuation, timezone, debug)
+
 def incidence(sun_azimuth, sun_elevation, panel_azimuth, panel_tilt):
 	"""
 	Return angle between sun and normal to panel - all angles in radians
