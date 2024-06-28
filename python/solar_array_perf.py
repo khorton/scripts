@@ -63,7 +63,7 @@ def power_vs_time(array, year, month, day, start_hour, end_hour, inc=.1, timezon
 
 	return power
 
-def max_power(year, month, day, hour, minute, array, attenuation = 0.09, timezone='CENT', debug=False):
+def max_power(year, month, day, hour, minute, array, attenuation = 0, timezone='CENT', debug=False):
 	"""
 	Return theoretical maximum solar array output in watts for a given date and UTC time
 	"""
@@ -99,7 +99,17 @@ def power(year, month, day, hour, minute, array, attenuation=0.09, timezone='CEN
 	"""
 	Return predicted solar array output in watts for a given date and UTC time, accounting for solar attenuation
 	"""	
-	return max_power(year, month, day, hour, minute, array, timezone, attenuation, timezone, debug)
+	return max_power(year, month, day, hour, minute, array, attenuation, timezone, debug)
+
+def period_power(start, end, array, inc=5, attenuation=0.09, timezone='CENT', debug=False):
+	"""
+	Return total energy produced by array over a period
+	
+	start and end are tuples of (year, month, day, minute)
+	
+	inc is the length of the integration slices in minutes
+	"""
+	
 
 def incidence(sun_azimuth, sun_elevation, panel_azimuth, panel_tilt):
 	"""
