@@ -11,6 +11,7 @@ from datetime import datetime
 from pytz import timezone
 central = timezone('US/Central')
 import matplotlib.pyplot as plt
+import numpy as np
 # from scipy import integrate
 
 ts = load.timescale()
@@ -91,6 +92,7 @@ def max_power(year, month, day, hour, minute, array, attenuation = 0, timezone='
 			if debug:
 				print("Panel Incidence=", section_incidence * 180 / pi, "degrees")
 				print('Section Power:', section_power)
+				print('Panel Power:', section_power / row['panels'])
 			array_power += section_power
 		return array_power
 
@@ -109,6 +111,7 @@ def period_power(start, end, array, inc=5, attenuation=0.09, timezone='CENT', de
 	
 	inc is the length of the integration slices in minutes
 	"""
+# 	data = np.array
 	
 
 def incidence(sun_azimuth, sun_elevation, panel_azimuth, panel_tilt):
