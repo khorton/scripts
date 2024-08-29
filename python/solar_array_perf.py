@@ -39,7 +39,7 @@ def plot_power_vs_time(df, title_text='Solar Array Power vs Time'):
 	df.plot(x='hour',y='kW', grid='both', ylabel='Solar Array Power (kW)', legend=False, title=title_text)
 	plt.show()
 
-def power_vs_time(array, year, month, day, start_hour, end_hour, inc=.1, timezone='CENT'):
+def power_vs_time(array, year, month, day, start_hour, end_hour, inc=.1, attenuation=0, timezone='CENT'):
 	"""
 	Return Pandas Dataframe of solar array max power vs time from start hour to end hour
 	"""
@@ -52,7 +52,7 @@ def power_vs_time(array, year, month, day, start_hour, end_hour, inc=.1, timezon
 	
 	for h in hours:
 		minute = int((h - int(h)) * 60)
-		powers.append(max_power(year, month, day, int(h), minute, array, timezone) / 1000)
+		powers.append(max_power(year, month, day, int(h), minute, array, attenuation, timezone) / 1000)
 	
 	columns = ['hour', 'kW']
 	power = pd.DataFrame(columns=columns)
@@ -64,7 +64,7 @@ def power_vs_time(array, year, month, day, start_hour, end_hour, inc=.1, timezon
 
 	return power
 
-def max_power(year, month, day, hour, minute, array, attenuation = 0, timezone='CENT', debug=False):
+def max_power(year, month, day, hour, minute, array, attenuation=0, timezone='CENT', debug=False):
 	"""
 	Return theoretical maximum solar array output in watts for a given date and UTC time
 	"""
@@ -88,7 +88,7 @@ def max_power(year, month, day, hour, minute, array, attenuation = 0, timezone='
 		array_power = 0
 		for index, row in array.iterrows():
 			section_incidence = incidence(sun_azimuth.radians, sun_elevation.radians, row['azimuth'], row['tilt'])
-			section_power = min(row['rated watts per section'] * incidence_correction(section_incidence) * (1 - attenuation), row['max watts per section'])
+			section_power = min(row['rated watts per section'] * incidence_correction(section_incidence) * (1.0 - attenuation), row['max watts per section'])
 			if debug:
 				print("Panel Incidence=", section_incidence * 180 / pi, "degrees")
 				print('Section Power:', section_power)
