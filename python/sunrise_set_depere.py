@@ -10,7 +10,7 @@ dp.lat, dp.long = '44.428220', '-87.982371'
 dp.elevation = 212 # KGRB elevation
 sun = E.Sun()
   
-dp.date = E.Date('2023/11/01')
+dp.date = E.Date('2024/11/01')
 
 print("2012 Explorers Trail Sunrise and Sunset Times\n")
 print("   Date      SunRise    SunSet     HrsUp   Change")
