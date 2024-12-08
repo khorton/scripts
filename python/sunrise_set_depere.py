@@ -1,4 +1,4 @@
-#! /opt/local/bin/python3
+#! /usr/bin/env python3
 # print('2012 Explorers Trail SunRise and SunSet times')
 
 import ephem as E
